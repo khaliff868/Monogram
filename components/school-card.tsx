@@ -24,7 +24,7 @@ export function SchoolCard({ slug, name, location, type, gender, initials, verif
       <Link href={`/schools/${slug}`} className="block group">
         <div className="bg-card rounded-xl overflow-hidden" style={{ boxShadow: 'var(--shadow-md)' }}>
           {/* Crest area */}
-          <div className="flex items-center justify-center py-6 bg-pattern-brown">
+          <div className="flex items-center justify-center py-6" style={{ background: 'linear-gradient(135deg, #f5ede1, #e9dcc9)' }}>
             <MonogramCrest initials={initials ?? name?.charAt?.(0) ?? 'S'} size={72} />
           </div>
           {/* Info */}
