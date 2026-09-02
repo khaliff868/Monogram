@@ -85,7 +85,7 @@ export function HomeClient({ schools, schoolCount, memberCount, ad, siteUrl }: {
               <img
                 src="/monogram-logo.png"
                 alt="Monogram crest"
-                className="w-24 h-24 md:w-32 md:h-32 mx-auto mb-6"
+                className="w-48 h-48 md:w-64 md:h-64 mx-auto mb-6"
               />
               <h1 className="font-freezone text-5xl md:text-6xl lg:text-7xl text-white mb-4">
                 MONO<span style={{ color: '#FFA800' }}>GRAM</span>
