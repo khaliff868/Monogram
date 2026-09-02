@@ -60,9 +60,9 @@ export function HomeAdBanner({ ad, siteUrl }: { ad: HomeAd | null; siteUrl: stri
   return (
     <section className="py-6 bg-background">
       <div className="max-w-[1200px] mx-auto px-4">
-        <div className="flex items-stretch gap-4 justify-center">
+        <div className="relative flex items-stretch justify-center">
           {/* Get the App / QR column */}
-          <div className="hidden md:flex flex-col items-center justify-center shrink-0 w-[130px] rounded-xl border border-black/5 bg-white shadow-sm px-3 py-3">
+          <div className="hidden lg:flex flex-col items-center justify-center shrink-0 w-[130px] rounded-xl border border-black/5 bg-white shadow-sm px-3 py-3 absolute left-0 top-1/2 -translate-y-1/2">
             <div className="rounded-lg border border-black/5 p-1.5 bg-white">
               <QRCodeSVG value={siteUrl} size={72} bgColor="#ffffff" fgColor="#663f30" />
             </div>
@@ -74,7 +74,7 @@ export function HomeAdBanner({ ad, siteUrl }: { ad: HomeAd | null; siteUrl: stri
           </div>
 
           {/* Banner */}
-          <div className="flex-1 min-w-0 max-w-[900px]">
+          <div className="w-full max-w-[900px] mx-auto">
             {ad.destinationUrl ? (
               <a href={ad.destinationUrl} target="_blank" rel="noopener noreferrer sponsored" onClick={handleClick} className="block">
                 {bannerInner}
