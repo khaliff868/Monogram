@@ -81,7 +81,7 @@ export function HomeClient({ schools, schoolCount, memberCount, ad, siteUrl }: {
         </div>
         <div className="max-w-[1200px] mx-auto px-4 py-8 md:py-[52px] relative z-10">
           <SlideIn from="bottom">
-            <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
+            <div className="flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-12">
               <img
                 src="/monogram-logo.png"
                 alt="Monogram crest"
@@ -94,12 +94,12 @@ export function HomeClient({ schools, schoolCount, memberCount, ad, siteUrl }: {
               <p className="text-lg md:text-xl text-white/80 font-medium mb-2">
                 Your School. Your Community.
               </p>
-              <p className="text-sm text-white/60 mb-8 max-w-lg mx-auto">
+              <p className="text-sm text-white/60 mb-8 max-w-lg mx-auto md:mx-0">
                 Trinidad & Tobago&apos;s premier school directory — find books, uniforms, past papers and suppliers for every school.
               </p>
 
               {/* Search */}
-              <form onSubmit={handleSearch} className="flex items-center gap-2 max-w-md mx-auto mb-8">
+              <form onSubmit={handleSearch} className="flex items-center gap-2 max-w-md mx-auto md:mx-0 mb-8">
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <input
