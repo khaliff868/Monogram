@@ -1,0 +1,295 @@
+generator client {
+    provider = "prisma-client-js"
+    binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+    output = "/home/ubuntu/monogram/nextjs_space/node_modules/.prisma/client"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  username      String    @unique
+  password      String
+  role          String    @default("user") // user | admin
+  suspended     Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lastLoginAt   DateTime?
+
+  accounts      Account[]
+  sessions      Session[]
+  favorites     FavoriteSchool[]
+  recentlyViewed RecentlyViewed[]
+  listings      Listing[]
+  pastPapers    PastPaper[]
+  suppliers     Supplier[]
+  notifications Notification[]
+  reports       Report[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model School {
+  id            String   @id @default(cuid())
+  name          String
+  slug          String   @unique
+  location      String
+  region        String
+  type          String   // Government | Denominational | Private
+  gender        String   // Boys | Girls | Co-ed
+  description   String?
+  website       String?
+  phone         String?
+  email         String?
+  established   Int?
+  monogramUrl   String?  // cloud_storage_path for uploaded monogram
+  isPublicImage Boolean  @default(true)
+  initials      String?
+  visible       Boolean  @default(true)
+  featured      Boolean  @default(false)
+  verified      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  pageViews     SchoolPageView[]
+  favorites     FavoriteSchool[]
+  recentlyViewed RecentlyViewed[]
+  adSchools     AdSchool[]
+  listings      Listing[]
+  pastPapers    PastPaper[]
+  supplierSchools SupplierSchool[]
+}
+
+model Announcement {
+  id        String   @id @default(cuid())
+  text      String
+  link      String?
+  active    Boolean  @default(true)
+  startDate DateTime @default(now())
+  endDate   DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Advertisement {
+  id              String   @id @default(cuid())
+  advertiserName  String
+  bannerImagePath String?  // cloud_storage_path
+  isPublicImage   Boolean  @default(true)
+  destinationUrl  String?
+  active          Boolean  @default(true)
+  startDate       DateTime @default(now())
+  endDate         DateTime?
+  showOnAll       Boolean  @default(true)
+  impressions     Int      @default(0)
+  clicks          Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  adSchools       AdSchool[]
+}
+
+model AdSchool {
+  id              String @id @default(cuid())
+  advertisementId String
+  schoolId        String
+
+  advertisement   Advertisement @relation(fields: [advertisementId], references: [id], onDelete: Cascade)
+  school          School        @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  @@unique([advertisementId, schoolId])
+}
+
+model FavoriteSchool {
+  id        String   @id @default(cuid())
+  userId    String
+  schoolId  String
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  school School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, schoolId])
+}
+
+model RecentlyViewed {
+  id        String   @id @default(cuid())
+  userId    String
+  schoolId  String
+  viewedAt  DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  school School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, schoolId])
+}
+
+model SchoolPageView {
+  id        String   @id @default(cuid())
+  schoolId  String
+  viewedAt  DateTime @default(now())
+
+  school School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  @@index([schoolId])
+}
+
+model Listing {
+  id            String   @id @default(cuid())
+  title         String
+  description   String?
+  category      String   // BOOKS | UNIFORMS | SHOES | OTHER
+  condition     String?  // New | Used | Like New
+  price         Float?   // optional asking price
+  photos        String[] // cloud_storage_paths
+  contactPhone  String?
+  contactEmail  String?
+  contactWhatsApp String?
+  status        String   @default("pending") // pending | approved | rejected
+  schoolId      String
+  userId        String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  school School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([schoolId, category])
+  @@index([status])
+}
+
+model PastPaper {
+  id        String   @id @default(cuid())
+  subject   String
+  examType  String   // CSEC | CAPE | SEA | Internal
+  year      Int
+  paperNum  String?  // Paper 1, Paper 2, etc.
+  filePath  String?  // cloud_storage_path for uploaded file
+  isPublicFile Boolean @default(true)
+  schoolId  String
+  userId    String?  // who uploaded
+  status    String   @default("pending") // pending | approved | rejected
+  downloads Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  school School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  user   User?  @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([schoolId, subject])
+  @@index([status])
+}
+
+model Supplier {
+  id            String   @id @default(cuid())
+  businessName  String
+  description   String?
+  categories    String[] // BOOKS | UNIFORMS | SHOES | SUPPLIES | OTHER
+  location      String?
+  phone         String?
+  email         String?
+  whatsApp      String?
+  website       String?
+  verified      Boolean  @default(false)
+  status        String   @default("pending") // pending | approved | rejected
+  userId        String?  // who submitted
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user           User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
+  supplierSchools SupplierSchool[]
+
+  @@index([status])
+}
+
+model SupplierSchool {
+  id         String @id @default(cuid())
+  supplierId String
+  schoolId   String
+
+  supplier Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  school   School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+
+  @@unique([supplierId, schoolId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String   // listing_approved | listing_rejected | new_announcement | welcome
+  title     String
+  message   String
+  link      String?  // optional URL to navigate to
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, read])
+}
+
+model Report {
+  id          String   @id @default(cuid())
+  type        String   // listing | supplier | school | past_paper
+  targetId    String   // ID of the reported item
+  targetName  String?  // name/title for display
+  reason      String   // scam | incorrect | inappropriate | copyright | other
+  details     String?
+  status      String   @default("pending") // pending | reviewed | resolved | dismissed
+  userId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@index([type, targetId])
+}
+
+model SiteSettings {
+  id           String  @id @default("default")
+  siteName     String  @default("MONOGRAM")
+  tagline      String  @default("Your School. Your Community.")
+  contactEmail String  @default("")
+  facebook     String  @default("")
+  instagram    String  @default("")
+  twitter      String  @default("")
+  featuredEnabled Boolean @default(true)
+}
