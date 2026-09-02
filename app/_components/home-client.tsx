@@ -81,25 +81,19 @@ export function HomeClient({ schools, schoolCount, memberCount, ad, siteUrl }: {
         </div>
         <div className="max-w-[1200px] mx-auto px-4 py-8 md:py-[52px] relative z-10">
           <SlideIn from="bottom">
-            <div className="flex flex-col md:flex-row items-center md:items-start gap-8 md:gap-12">
-              <img
-                src="/monogram-logo.png"
-                alt="Monogram crest"
-                className="w-40 h-40 md:w-56 md:h-56 flex-shrink-0"
-              />
-              <div className="text-center md:text-left flex-1">
+            <div className="text-center max-w-2xl mx-auto">
               <h1 className="font-freezone text-5xl md:text-6xl lg:text-7xl text-white mb-4">
                 MONO<span style={{ color: '#FFA800' }}>GRAM</span>
               </h1>
               <p className="text-lg md:text-xl text-white/80 font-medium mb-2">
                 Your School. Your Community.
               </p>
-              <p className="text-sm text-white/60 mb-8 max-w-lg mx-auto md:mx-0">
+              <p className="text-sm text-white/60 mb-8 max-w-lg mx-auto">
                 Trinidad & Tobago&apos;s premier school directory — find books, uniforms, past papers and suppliers for every school.
               </p>
 
               {/* Search */}
-              <form onSubmit={handleSearch} className="flex items-center gap-2 max-w-md mx-auto md:mx-0 mb-8">
+              <form onSubmit={handleSearch} className="flex items-center gap-2 max-w-md mx-auto mb-8">
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <input
@@ -120,10 +114,9 @@ export function HomeClient({ schools, schoolCount, memberCount, ad, siteUrl }: {
               </Button>
 
               {/* Counters */}
-              <div className="flex items-center justify-center md:justify-start gap-8 mt-10">
+              <div className="flex items-center justify-center gap-8 mt-10">
                 <AnimatedCounter target={schoolCount} label="Schools" icon={<GraduationCap className="w-5 h-5 text-[#FFA800]" />} />
                 <AnimatedCounter target={memberCount} label="Active Members" icon={<Users className="w-5 h-5 text-[#FFA800]" />} />
-              </div>
               </div>
             </div>
           </SlideIn>
