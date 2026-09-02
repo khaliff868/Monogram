@@ -81,7 +81,13 @@ export function HomeClient({ schools, schoolCount, memberCount, ad, siteUrl }: {
         </div>
         <div className="max-w-[1200px] mx-auto px-4 py-8 md:py-[52px] relative z-10">
           <SlideIn from="bottom">
-            <div className="text-center max-w-2xl mx-auto">
+            <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
+              <img
+                src="/monogram-logo.png"
+                alt="Monogram crest"
+                className="w-40 h-40 md:w-56 md:h-56 flex-shrink-0"
+              />
+              <div className="text-center md:text-left flex-1">
               <h1 className="font-freezone text-5xl md:text-6xl lg:text-7xl text-white mb-4">
                 MONO<span style={{ color: '#FFA800' }}>GRAM</span>
               </h1>
@@ -114,9 +120,10 @@ export function HomeClient({ schools, schoolCount, memberCount, ad, siteUrl }: {
               </Button>
 
               {/* Counters */}
-              <div className="flex items-center justify-center gap-8 mt-10">
+              <div className="flex items-center justify-center md:justify-start gap-8 mt-10">
                 <AnimatedCounter target={schoolCount} label="Schools" icon={<GraduationCap className="w-5 h-5 text-[#FFA800]" />} />
                 <AnimatedCounter target={memberCount} label="Active Members" icon={<Users className="w-5 h-5 text-[#FFA800]" />} />
+              </div>
               </div>
             </div>
           </SlideIn>
