@@ -79,13 +79,13 @@ export function HomeClient({ schools, schoolCount, memberCount, ad, siteUrl }: {
           <div className="absolute bottom-20 right-20 w-48 h-48 rounded-full border border-[#FFA800]" />
           <div className="absolute top-1/2 left-1/3 w-24 h-24 rounded-full border border-white/20" />
         </div>
-        <div className="max-w-[1200px] mx-auto px-4 py-4 md:py-6 relative z-10">
+        <div className="max-w-[1200px] mx-auto px-4 pt-2 pb-4 md:pt-3 md:pb-6 relative z-10">
           <SlideIn from="bottom">
             <div className="text-center max-w-2xl mx-auto">
               <img
                 src="/monogram-logo.png"
                 alt="Monogram crest"
-                className="w-40 h-40 md:w-56 md:h-56 mx-auto mb-0"
+                className="w-40 h-40 md:w-56 md:h-56 mx-auto -mb-4"
               />
               <h1 className="font-freezone text-5xl md:text-6xl lg:text-7xl text-white mb-4">
                 MONO<span style={{ color: '#FFA800' }}>GRAM</span>
