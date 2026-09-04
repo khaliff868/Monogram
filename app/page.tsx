@@ -44,7 +44,7 @@ export default async function HomePage() {
     prisma.school.findMany({
       where: { visible: true },
       orderBy: { name: 'asc' },
-      take: 12,
+      take: 24,
       select: { id: true, slug: true, name: true, location: true, type: true, gender: true, initials: true, verified: true },
     }),
     prisma.school.count({ where: { visible: true } }),
