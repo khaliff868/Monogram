@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { X } from 'lucide-react';
 import { toast } from 'sonner';
+import { uploadListingPhoto } from '@/lib/supabase-client';
+import { ImagePlus, Loader2 } from 'lucide-react';
 
 const categories = [
   { value: 'BOOKS', label: 'Books' },
@@ -24,6 +26,8 @@ interface Props {
 
 export function CreateListingDialog({ schoolId, schoolName, category, onClose, onCreated }: Props) {
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [photos, setPhotos] = useState<string[]>([]);
   const [form, setForm] = useState({
     title: '',
     description: '',
@@ -47,7 +51,7 @@ export function CreateListingDialog({ schoolId, schoolName, category, onClose, o
       const res = await fetch('/api/listings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, schoolId, price: form.price || undefined }),
+        body: JSON.stringify({ ...form, schoolId, photos, price: form.price || undefined }),
       });
       if (res.ok) {
         onCreated();
@@ -114,6 +118,47 @@ export function CreateListingDialog({ schoolId, schoolName, category, onClose, o
           <div>
             <label className="text-xs font-medium mb-1 block">Price (TT$) — optional</label>
             <Input type="number" step="0.01" min="0" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} placeholder="0.00" />
+          </div>
+
+          <div>
+            <label className="text-xs font-medium mb-1 block">Photos</label>
+            <div className="flex flex-wrap gap-2 mb-2">
+              {photos.map((url, i) => (
+                <div key={i} className="relative w-16 h-16 rounded-md overflow-hidden border border-border">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={url} alt="Listing photo" className="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => setPhotos(photos.filter((_, idx) => idx !== i))}
+                    className="absolute top-0 right-0 bg-black/60 text-white rounded-bl-md p-0.5"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              ))}
+              <label className="w-16 h-16 rounded-md border border-dashed border-border flex items-center justify-center cursor-pointer hover:bg-muted transition-colors">
+                {uploading ? <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" /> : <ImagePlus className="w-5 h-5 text-muted-foreground" />}
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  disabled={uploading}
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    setUploading(true);
+                    try {
+                      const url = await uploadListingPhoto(file);
+                      setPhotos(prev => [...prev, url]);
+                    } catch {
+                      toast.error('Photo upload failed');
+                    }
+                    setUploading(false);
+                    e.target.value = '';
+                  }}
+                />
+              </label>
+            </div>
           </div>
 
           <div className="border-t border-border pt-4">
