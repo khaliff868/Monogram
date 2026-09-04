@@ -28,6 +28,9 @@ model User {
   suppliers     Supplier[]
   notifications Notification[]
   reports       Report[]
+  conversationsAsP1 Conversation[] @relation("ConversationParticipant1")
+  conversationsAsP2 Conversation[] @relation("ConversationParticipant2")
+  sentMessages  Message[]
 }
 
 model Account {
@@ -189,6 +192,7 @@ model Listing {
 
   school School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  conversations Conversation[]
 
   @@index([schoolId, category])
   @@index([status])
@@ -247,6 +251,42 @@ model SupplierSchool {
   school   School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
 
   @@unique([supplierId, schoolId])
+}
+
+model Conversation {
+  id             String    @id @default(cuid())
+  participant1Id String
+  participant1   User      @relation("ConversationParticipant1", fields: [participant1Id], references: [id], onDelete: Cascade)
+  participant2Id String
+  participant2   User      @relation("ConversationParticipant2", fields: [participant2Id], references: [id], onDelete: Cascade)
+  listingId      String?
+  listing        Listing?  @relation(fields: [listingId], references: [id], onDelete: SetNull)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  messages       Message[]
+
+  @@unique([participant1Id, participant2Id, listingId])
+  @@index([participant1Id])
+  @@index([participant2Id])
+  @@index([listingId])
+  @@index([updatedAt])
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       String
+  sender         User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  content        String       @db.Text
+  read           Boolean      @default(false)
+  readAt         DateTime?
+  createdAt      DateTime     @default(now())
+
+  @@index([conversationId])
+  @@index([senderId])
+  @@index([createdAt])
+  @@index([read])
 }
 
 model Notification {

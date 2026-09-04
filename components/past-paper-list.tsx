@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { FileText, Download, ChevronDown, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { MessageUserButton } from '@/components/message-user-button';
 
 interface Paper {
   id: string;
@@ -13,7 +14,7 @@ interface Paper {
   paperNum: string | null;
   filePath: string | null;
   downloads: number;
-  user?: { username: string };
+  user?: { id: string; username: string };
 }
 
 export function PastPaperList({ papers }: { papers: Paper[] }) {
@@ -83,11 +84,20 @@ export function PastPaperList({ papers }: { papers: Paper[] }) {
                               <span className="text-[10px] text-muted-foreground">{paper.downloads} downloads</span>
                             )}
                           </div>
-                          {paper.filePath && (
-                            <Button size="sm" variant="ghost" className="h-7 text-xs opacity-0 group-hover:opacity-100 transition-opacity" onClick={() => handleDownload(paper.id)}>
-                              <Download className="w-3.5 h-3.5 mr-1" /> Download
-                            </Button>
-                          )}
+                          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            {paper.user?.id && (
+                              <MessageUserButton
+                                recipientId={paper.user.id}
+                                label=""
+                                className="h-7 w-7 flex items-center justify-center rounded-md hover:bg-muted text-muted-foreground"
+                              />
+                            )}
+                            {paper.filePath && (
+                              <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => handleDownload(paper.id)}>
+                                <Download className="w-3.5 h-3.5 mr-1" /> Download
+                              </Button>
+                            )}
+                          </div>
                         </div>
                       ))
                     )}

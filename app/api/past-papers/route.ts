@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
 
   const papers = await prisma.pastPaper.findMany({
     where,
-    include: { school: { select: { name: true, slug: true, initials: true } }, user: { select: { username: true } } },
+    include: { school: { select: { name: true, slug: true, initials: true } }, user: { select: { id: true, username: true } } },
     orderBy: [{ year: 'desc' }, { subject: 'asc' }],
   });
 

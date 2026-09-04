@@ -2,6 +2,7 @@
 
 import { Tag, User, MessageCircle, Phone, Mail, Clock } from 'lucide-react';
 import { ClientOnly } from '@/components/client-only';
+import { MessageUserButton } from '@/components/message-user-button';
 
 const conditionColors: Record<string, string> = {
   'New': 'bg-green-100 text-green-800',
@@ -21,7 +22,7 @@ interface ListingProps {
     contactEmail: string | null;
     contactWhatsApp: string | null;
     createdAt: string;
-    user?: { username: string };
+    user?: { id: string; username: string };
     school?: { name: string; slug: string };
   };
 }
@@ -75,6 +76,9 @@ export function ListingCard({ listing }: ListingProps) {
           <a href={`mailto:${listing.contactEmail}`} className="inline-flex items-center gap-1 text-[10px] px-2.5 py-1.5 rounded-md bg-gray-600 text-white hover:bg-gray-700 transition-colors font-medium">
             <Mail className="w-3 h-3" /> Email
           </a>
+        )}
+        {listing.user?.id && (
+          <MessageUserButton recipientId={listing.user.id} listingId={listing.id} label="Message" />
         )}
       </div>
     </div>

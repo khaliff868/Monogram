@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { useState } from 'react';
-import { Menu, X, GraduationCap, LogIn, UserPlus, LayoutDashboard, LogOut, Shield, Search } from 'lucide-react';
+import { Menu, X, GraduationCap, LogIn, UserPlus, LayoutDashboard, LogOut, Shield, Search, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { NotificationBell } from '@/components/notification-bell';
 import { SearchSuggestions } from '@/components/search-suggestions';
@@ -60,6 +60,9 @@ export function Navbar() {
           {session ? (
             <>
               <NotificationBell />
+              <Button asChild variant="ghost" size="sm">
+                <Link href="/dashboard/messages"><MessageCircle className="w-4 h-4 mr-1" />Messages</Link>
+              </Button>
               {isAdmin && (
                 <Button asChild variant="outline" size="sm">
                   <Link href="/admin"><Shield className="w-4 h-4 mr-1" />Admin</Link>
