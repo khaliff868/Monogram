@@ -75,11 +75,6 @@ export function HomeClient({ schools, schoolCount, memberCount, ad, siteUrl }: {
 
       {/* Hero */}
       <section className="relative bg-pattern-brown-tile overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-10 w-32 h-32 rounded-full border-2 border-[#FFA800]" />
-          <div className="absolute bottom-20 right-20 w-48 h-48 rounded-full border border-[#FFA800]" />
-          <div className="absolute top-1/2 left-1/3 w-24 h-24 rounded-full border border-white/20" />
-        </div>
         <div className="max-w-[1200px] mx-auto px-4 pt-[4px] pb-3 md:pt-[6px] md:pb-5 relative z-10">
           <SlideIn from="bottom">
             <div className="text-center max-w-2xl mx-auto">
