@@ -157,7 +157,7 @@ export function HomeClient({ schools, schoolCount, memberCount, ad, siteUrl }: {
 
           <FadeIn>
             <div className="text-center mt-10">
-              <Button asChild variant="outline" size="lg">
+              <Button asChild size="lg" className="bg-[#FFA800] hover:bg-[#E08E00] text-[#663f30] font-semibold">
                 <Link href="/schools">View All Schools <ArrowRight className="w-4 h-4 ml-1" /></Link>
               </Button>
             </div>
