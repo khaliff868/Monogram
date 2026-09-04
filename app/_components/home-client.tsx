@@ -111,10 +111,6 @@ export function HomeClient({ schools, schoolCount, memberCount, ad, siteUrl }: {
                 </Button>
               </form>
 
-              <Button asChild size="lg" className="bg-[#FFA800] hover:bg-[#E08E00] text-[#663f30] font-semibold">
-                <Link href="/schools">Explore Schools <ArrowRight className="w-4 h-4 ml-1" /></Link>
-              </Button>
-
               {/* Counters */}
               <div className="flex items-center justify-center gap-8 mt-10">
                 <AnimatedCounter target={schoolCount} label="Schools" icon={<GraduationCap className="w-5 h-5 text-[#FFA800]" />} />
@@ -132,13 +128,18 @@ export function HomeClient({ schools, schoolCount, memberCount, ad, siteUrl }: {
       <section className="py-16 bg-background">
         <div className="max-w-[1200px] mx-auto px-4">
           <FadeIn>
-            <div className="text-center mb-10">
-              <h2 className="font-display text-2xl md:text-3xl font-bold tracking-tight mb-2" style={{ color: '#663f30' }}>
-                School Directory
-              </h2>
-              <p className="text-muted-foreground text-sm">
-                Browse Trinidad & Tobago&apos;s schools
-              </p>
+            <div className="flex flex-col md:flex-row md:items-center md:justify-center gap-4 mb-10">
+              <Button asChild size="lg" className="bg-[#FFA800] hover:bg-[#E08E00] text-[#663f30] font-semibold">
+                <Link href="/schools">Explore Schools <ArrowRight className="w-4 h-4 ml-1" /></Link>
+              </Button>
+              <div className="text-center">
+                <h2 className="font-display text-2xl md:text-3xl font-bold tracking-tight mb-2" style={{ color: '#663f30' }}>
+                  School Directory
+                </h2>
+                <p className="text-muted-foreground text-sm">
+                  Browse Trinidad & Tobago&apos;s schools
+                </p>
+              </div>
             </div>
           </FadeIn>
 
