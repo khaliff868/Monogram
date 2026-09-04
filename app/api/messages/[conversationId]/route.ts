@@ -5,11 +5,11 @@ import { auth } from '@/auth';
 export const dynamic = 'force-dynamic';
 
 // GET messages for a conversation (and mark incoming ones read)
-export async function GET(req: NextRequest, { params }: { params: { conversationId: string } }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ conversationId: string }> }) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const userId = session.user.id;
-  const { conversationId } = params;
+  const { conversationId } = await params;
 
   const conversation = await prisma.conversation.findFirst({
     where: { id: conversationId, OR: [{ participant1Id: userId }, { participant2Id: userId }] },
@@ -36,11 +36,11 @@ export async function GET(req: NextRequest, { params }: { params: { conversation
 }
 
 // POST - Send a message in an existing conversation
-export async function POST(req: NextRequest, { params }: { params: { conversationId: string } }) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ conversationId: string }> }) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const userId = session.user.id;
-  const { conversationId } = params;
+  const { conversationId } = await params;
 
   const body = await req.json();
   const { content } = body;
