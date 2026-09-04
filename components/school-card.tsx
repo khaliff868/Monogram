@@ -18,7 +18,7 @@ interface SchoolCardProps {
 
 export function SchoolCard({ slug, name, location, type, gender, initials, verified }: SchoolCardProps) {
   const typeColor = type === 'Government' ? 'bg-blue-100 text-blue-800' : type === 'Denominational' ? 'bg-amber-100 text-amber-800' : 'bg-green-100 text-green-800';
-  const crestBorderColor = type === 'Government' ? '#1e40af' : type === 'Denominational' ? '#b45309' : '#166534';
+  const crestBorderColor = type === 'Government' ? '#1e40af' : type === 'Denominational' ? '#f59e0b' : '#16a34a';
 
   return (
     <HoverLift>
