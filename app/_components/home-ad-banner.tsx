@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { Smartphone } from 'lucide-react';
 
@@ -23,7 +23,6 @@ function track(adId: string, type: 'impression' | 'click') {
 }
 
 export function HomeAdBanner({ ad, siteUrl }: { ad: HomeAd | null; siteUrl: string }) {
-  const [imgError, setImgError] = useState(false);
   const fired = useRef(false);
 
   useEffect(() => {
@@ -33,27 +32,20 @@ export function HomeAdBanner({ ad, siteUrl }: { ad: HomeAd | null; siteUrl: stri
     }
   }, [ad]);
 
-  if (!ad || !ad.imageUrl || imgError) return null;
-
-  const handleClick = () => {
-    track(ad.id, 'click');
-  };
-
   const bannerInner = (
-    <div className="relative w-full overflow-hidden rounded-xl border border-black/5 shadow-sm bg-white">
-      {/* SPONSORED label */}
-      <div className="absolute top-0 left-0 z-10">
-        <span className="inline-block bg-[#663f30]/90 text-white text-[10px] font-semibold tracking-wide uppercase px-2.5 py-1 rounded-br-lg">
-          ◁ Sponsored
-        </span>
-      </div>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={ad.imageUrl!}
-        alt={`${ad.advertiserName} advertisement`}
-        onError={() => setImgError(true)}
-        className="w-full h-[120px] sm:h-[150px] md:h-[170px] object-cover"
-      />
+    <div
+      className="relative w-full h-[120px] sm:h-[150px] md:h-[170px] rounded-xl border border-black/5 shadow-sm flex flex-col items-center justify-center text-center px-6"
+      style={{ background: 'linear-gradient(135deg, #663f30, #4a2d22)' }}
+    >
+      <h3 className="font-display font-bold text-white text-lg md:text-2xl mb-1">
+        Advertise With <span style={{ color: '#FFA800' }}>MONOGRAM</span>
+      </h3>
+      <p className="text-white/70 text-xs md:text-sm mb-3 max-w-md">
+        Reach thousands of parents and students across Trinidad &amp; Tobago.
+      </p>
+      <span className="inline-block bg-[#FFA800] hover:bg-[#E08E00] text-[#663f30] text-xs md:text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
+        Get in Touch
+      </span>
     </div>
   );
 
@@ -75,13 +67,9 @@ export function HomeAdBanner({ ad, siteUrl }: { ad: HomeAd | null; siteUrl: stri
 
           {/* Banner */}
           <div className="w-full max-w-[900px] mx-auto">
-            {ad.destinationUrl ? (
-              <a href={ad.destinationUrl} target="_blank" rel="noopener noreferrer sponsored" onClick={handleClick} className="block">
-                {bannerInner}
-              </a>
-            ) : (
-              bannerInner
-            )}
+            <a href="/about" className="block">
+              {bannerInner}
+            </a>
           </div>
         </div>
       </div>
