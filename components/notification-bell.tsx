@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Bell, Check, ExternalLink } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { ClientOnly } from '@/components/client-only';
 
 interface Notification {
@@ -18,6 +19,7 @@ interface Notification {
 
 function NotificationBellInner() {
   const { data: session } = useSession();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -106,7 +108,11 @@ function NotificationBellInner() {
                 <div
                   key={n.id}
                   className={`px-4 py-3 border-b border-border last:border-0 hover:bg-muted/50 transition-colors cursor-pointer ${!n.read ? 'bg-[#FFA800]/5' : ''}`}
-                  onClick={() => { if (!n.read) markOneRead(n.id); if (n.link) { setOpen(false); } }}
+                  onClick={() => {
+                    if (!n.read) markOneRead(n.id);
+                    setOpen(false);
+                    if (n.link) router.push(n.link);
+                  }}
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex-1">
@@ -117,9 +123,7 @@ function NotificationBellInner() {
                       <p className="text-xs text-muted-foreground mt-0.5 line-clamp-2">{n.message}</p>
                     </div>
                     {n.link && (
-                      <Link href={n.link} className="flex-shrink-0 p-1 hover:text-[#FFA800]">
-                        <ExternalLink className="w-3 h-3" />
-                      </Link>
+                      <ExternalLink className="w-3 h-3 flex-shrink-0 mt-0.5 text-muted-foreground" />
                     )}
                   </div>
                 </div>
