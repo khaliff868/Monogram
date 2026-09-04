@@ -18,6 +18,7 @@ interface SchoolCardProps {
 
 export function SchoolCard({ slug, name, location, type, gender, initials, verified }: SchoolCardProps) {
   const typeColor = type === 'Government' ? 'bg-blue-100 text-blue-800' : type === 'Denominational' ? 'bg-amber-100 text-amber-800' : 'bg-green-100 text-green-800';
+  const crestBorderColor = type === 'Government' ? '#1e40af' : type === 'Denominational' ? '#b45309' : '#166534';
 
   return (
     <HoverLift>
@@ -25,7 +26,7 @@ export function SchoolCard({ slug, name, location, type, gender, initials, verif
         <div className="bg-card rounded-xl overflow-hidden" style={{ boxShadow: 'var(--shadow-md)' }}>
           {/* Crest area */}
           <div className="flex items-center justify-center py-6" style={{ background: 'linear-gradient(135deg, #f5ede1, #e9dcc9)' }}>
-            <MonogramCrest initials={initials ?? name?.charAt?.(0) ?? 'S'} size={72} />
+            <MonogramCrest initials={initials ?? name?.charAt?.(0) ?? 'S'} size={72} borderColor={crestBorderColor} />
           </div>
           {/* Info */}
           <div className="p-4">

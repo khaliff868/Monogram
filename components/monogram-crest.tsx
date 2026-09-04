@@ -1,5 +1,5 @@
 'use client';
-export function MonogramCrest({ initials, size = 80, className = '' }: { initials: string; size?: number; className?: string }) {
+export function MonogramCrest({ initials, size = 80, className = '', borderColor = '#663f30' }: { initials: string; size?: number; className?: string; borderColor?: string }) {
   const displayInitials = initials ?? 'S';
   const fontSize = displayInitials?.length > 3 ? 20 : displayInitials?.length > 2 ? 26 : 34;
   return (
@@ -8,7 +8,7 @@ export function MonogramCrest({ initials, size = 80, className = '' }: { initial
         <path
           d="M50 4 L92 18 L92 55 Q92 88 50 106 Q8 88 8 55 L8 18 Z"
           fill="#FDF6EC"
-          stroke="#663f30"
+          stroke={borderColor}
           strokeWidth="5"
         />
         <path
