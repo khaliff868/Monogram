@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { Menu, X, GraduationCap, LogIn, UserPlus, LayoutDashboard, LogOut, Shield, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { NotificationBell } from '@/components/notification-bell';
+import { SearchSuggestions } from '@/components/search-suggestions';
 
 export function Navbar() {
   const { data: session } = useSession();
@@ -51,6 +52,7 @@ export function Navbar() {
             placeholder="Search schools, listings..."
             className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-border bg-muted/40 focus:outline-none focus:ring-2 focus:ring-[#FFA800] focus:bg-white transition"
           />
+          <SearchSuggestions query={query} />
         </form>
 
         {/* Desktop auth */}
@@ -100,6 +102,7 @@ export function Navbar() {
               placeholder="Search schools, listings..."
               className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-border bg-muted/40 focus:outline-none focus:ring-2 focus:ring-[#FFA800] focus:bg-white transition"
             />
+            <SearchSuggestions query={query} />
           </form>
           <nav className="flex flex-col gap-1 py-2">
             <Link href="/" className="px-3 py-2 text-sm font-medium rounded-lg hover:bg-muted" onClick={() => setOpen(false)}>Home</Link>

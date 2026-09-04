@@ -10,6 +10,7 @@ import { SchoolCard } from '@/components/school-card';
 import { AnnouncementBar } from '@/components/announcement-bar';
 import { FadeIn, SlideIn, Stagger, StaggerItem } from '@/components/ui/animate';
 import { HomeAdBanner, type HomeAd } from './home-ad-banner';
+import { SearchSuggestions } from '@/components/search-suggestions';
 import { useRouter } from 'next/navigation';
 import { useInView } from 'react-intersection-observer';
 
@@ -98,7 +99,7 @@ export function HomeClient({ schools, schoolCount, memberCount, ad, siteUrl }: {
               </p>
 
               {/* Search */}
-              <form onSubmit={handleSearch} className="flex items-center gap-2 max-w-md mx-auto mb-8">
+              <form onSubmit={handleSearch} className="flex items-center gap-2 max-w-md mx-auto mb-8 relative">
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <input
@@ -108,6 +109,7 @@ export function HomeClient({ schools, schoolCount, memberCount, ad, siteUrl }: {
                     onChange={e => setSearchQuery(e.target.value)}
                     className="w-full pl-10 pr-4 py-3 rounded-lg bg-white text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#FFA800]"
                   />
+                  <SearchSuggestions query={searchQuery} />
                 </div>
                 <Button type="submit" className="bg-[#FFA800] hover:bg-[#E08E00] text-[#663f30] font-semibold py-3 px-6">
                   Search
