@@ -50,7 +50,7 @@ export function Navbar() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search schools, listings..."
-            className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-border bg-muted/40 focus:outline-none focus:ring-2 focus:ring-[#FFA800] focus:bg-white transition"
+            className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-border bg-white focus:outline-none focus:ring-2 focus:ring-[#FFA800] transition"
           />
           <SearchSuggestions query={query} />
         </form>
@@ -100,7 +100,7 @@ export function Navbar() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search schools, listings..."
-              className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-border bg-muted/40 focus:outline-none focus:ring-2 focus:ring-[#FFA800] focus:bg-white transition"
+              className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-border bg-white focus:outline-none focus:ring-2 focus:ring-[#FFA800] transition"
             />
             <SearchSuggestions query={query} />
           </form>
