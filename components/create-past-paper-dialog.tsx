@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { X } from 'lucide-react';
 import { toast } from 'sonner';
+import { uploadPastPaperFile } from '@/lib/supabase-client';
+import { FileText, Loader2 } from 'lucide-react';
 
 const examTypes = ['CSEC', 'CAPE', 'SEA', 'Internal'];
 const subjects = [
@@ -24,6 +26,7 @@ interface Props {
 
 export function CreatePastPaperDialog({ schoolId, schoolName, onClose, onCreated }: Props) {
   const [loading, setLoading] = useState(false);
+  const [files, setFiles] = useState<File[]>([]);
   const [form, setForm] = useState({
     subject: '',
     examType: 'CSEC',
@@ -35,23 +38,45 @@ export function CreatePastPaperDialog({ schoolId, schoolName, onClose, onCreated
     e.preventDefault();
     if (!form.subject) { toast.error('Subject is required'); return; }
     if (!form.year) { toast.error('Year is required'); return; }
+    if (files.length === 0) { toast.error('Please select at least one file'); return; }
     setLoading(true);
     try {
-      const res = await fetch('/api/past-papers', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, schoolId }),
-      });
-      if (res.ok) {
+      let successCount = 0;
+      for (const file of files) {
+        try {
+          const filePath = await uploadPastPaperFile(file);
+          const res = await fetch('/api/past-papers', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ...form, schoolId, filePath }),
+          });
+          if (res.ok) successCount++;
+        } catch {
+          // continue with remaining files
+        }
+      }
+      if (successCount > 0) {
         onCreated();
       } else {
-        const data = await res.json();
-        toast.error(data.error || 'Failed to submit');
+        toast.error('Failed to submit past papers');
       }
     } catch {
       toast.error('Something went wrong');
     }
     setLoading(false);
+  };
+
+  const MAX_FILES = 5;
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = Array.from(e.target.files ?? []);
+    if (files.length + selected.length > MAX_FILES) {
+      toast.error(`You can upload up to ${MAX_FILES} files at once`);
+      const remaining = MAX_FILES - files.length;
+      setFiles(prev => [...prev, ...selected.slice(0, Math.max(0, remaining))]);
+    } else {
+      setFiles(prev => [...prev, ...selected]);
+    }
+    e.target.value = '';
   };
 
   const years = Array.from({ length: 30 }, (_, i) => 2026 - i);
@@ -108,8 +133,30 @@ export function CreatePastPaperDialog({ schoolId, schoolName, onClose, onCreated
             <Input value={form.paperNum} onChange={e => setForm({ ...form, paperNum: e.target.value })} placeholder="e.g. Paper 1, Paper 2" />
           </div>
 
+          <div>
+            <label className="text-xs font-medium mb-1 block">Files * (up to 5)</label>
+            <div className="space-y-2 mb-2">
+              {files.map((f, i) => (
+                <div key={i} className="flex items-center gap-2 text-xs bg-muted rounded-md px-2 py-1.5">
+                  <FileText className="w-3.5 h-3.5 flex-shrink-0 text-muted-foreground" />
+                  <span className="truncate flex-1">{f.name}</span>
+                  <button type="button" onClick={() => setFiles(files.filter((_, idx) => idx !== i))} className="text-muted-foreground hover:text-foreground">
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ))}
+            </div>
+            {files.length < 5 && (
+              <label className="flex items-center justify-center gap-2 border border-dashed border-border rounded-md py-2.5 text-xs text-muted-foreground cursor-pointer hover:bg-muted transition-colors">
+                <FileText className="w-4 h-4" />
+                Select file(s) to upload
+                <input type="file" accept=".pdf,image/*" multiple className="hidden" onChange={handleFileSelect} />
+              </label>
+            )}
+          </div>
+
           <Button type="submit" disabled={loading} className="w-full bg-[#663f30] hover:bg-[#533226] text-white">
-            {loading ? 'Submitting...' : 'Submit for Review'}
+            {loading ? (<><Loader2 className="w-4 h-4 mr-2 animate-spin inline" />Submitting...</>) : 'Submit for Review'}
           </Button>
         </form>
       </div>

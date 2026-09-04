@@ -136,28 +136,35 @@ export function CreateListingDialog({ schoolId, schoolName, category, onClose, o
                   </button>
                 </div>
               ))}
-              <label className="w-16 h-16 rounded-md border border-dashed border-border flex items-center justify-center cursor-pointer hover:bg-muted transition-colors">
-                {uploading ? <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" /> : <ImagePlus className="w-5 h-5 text-muted-foreground" />}
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  disabled={uploading}
-                  onChange={async (e) => {
-                    const file = e.target.files?.[0];
-                    if (!file) return;
-                    setUploading(true);
-                    try {
-                      const url = await uploadListingPhoto(file);
-                      setPhotos(prev => [...prev, url]);
-                    } catch {
-                      toast.error('Photo upload failed');
-                    }
-                    setUploading(false);
-                    e.target.value = '';
-                  }}
-                />
-              </label>
+              {photos.length < 5 && (
+                <label className="w-16 h-16 rounded-md border border-dashed border-border flex items-center justify-center cursor-pointer hover:bg-muted transition-colors">
+                  {uploading ? <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" /> : <ImagePlus className="w-5 h-5 text-muted-foreground" />}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    disabled={uploading}
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      if (photos.length >= 5) {
+                        toast.error('Maximum 5 photos allowed');
+                        e.target.value = '';
+                        return;
+                      }
+                      setUploading(true);
+                      try {
+                        const url = await uploadListingPhoto(file);
+                        setPhotos(prev => [...prev, url]);
+                      } catch {
+                        toast.error('Photo upload failed');
+                      }
+                      setUploading(false);
+                      e.target.value = '';
+                    }}
+                  />
+                </label>
+              )}
             </div>
           </div>
 
