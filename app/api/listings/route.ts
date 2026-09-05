@@ -43,6 +43,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Title, category, and school are required' }, { status: 400 });
   }
 
+  const existingCount = await prisma.listing.count({
+    where: { userId: session.user.id, status: { not: 'rejected' } },
+  });
+  if (existingCount >= 5) {
+    return NextResponse.json({ error: 'You can have a maximum of 5 listings at a time' }, { status: 400 });
+  }
+
   const listing = await prisma.listing.create({
     data: {
       title,

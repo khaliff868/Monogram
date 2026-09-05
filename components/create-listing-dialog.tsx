@@ -15,6 +15,7 @@ const categories = [
 ];
 
 const conditions = ['New', 'Like New', 'Used'];
+const MAX_PHOTOS = 3;
 
 interface Props {
   schoolId: string;
@@ -77,6 +78,55 @@ export function CreateListingDialog({ schoolId, schoolName, category, onClose, o
           <p className="text-xs text-muted-foreground">Listing for <strong>{schoolName}</strong>. All listings go through admin review before appearing.</p>
 
           <div>
+            <label className="text-xs font-medium mb-1 block">Photos (up to {MAX_PHOTOS})</label>
+            <p className="text-[11px] text-muted-foreground mb-2">Accepted formats: JPEG, PNG, WebP, GIF</p>
+            <div className="flex flex-wrap gap-2 mb-2">
+              {photos.map((url, i) => (
+                <div key={i} className="relative w-16 h-16 rounded-md overflow-hidden border border-border">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={url} alt="Listing photo" className="w-full h-full object-cover" />
+                  <button
+                    type="button"
+                    onClick={() => setPhotos(photos.filter((_, idx) => idx !== i))}
+                    className="absolute top-0 right-0 bg-black/60 text-white rounded-bl-md p-0.5"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              ))}
+              {photos.length < MAX_PHOTOS && (
+                <label className="w-16 h-16 rounded-md border border-dashed border-border flex items-center justify-center cursor-pointer hover:bg-muted transition-colors">
+                  {uploading ? <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" /> : <ImagePlus className="w-5 h-5 text-muted-foreground" />}
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    className="hidden"
+                    disabled={uploading}
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      if (photos.length >= MAX_PHOTOS) {
+                        toast.error(`Maximum ${MAX_PHOTOS} photos allowed`);
+                        e.target.value = '';
+                        return;
+                      }
+                      setUploading(true);
+                      try {
+                        const url = await uploadListingPhoto(file);
+                        setPhotos(prev => [...prev, url]);
+                      } catch {
+                        toast.error('Photo upload failed');
+                      }
+                      setUploading(false);
+                      e.target.value = '';
+                    }}
+                  />
+                </label>
+              )}
+            </div>
+          </div>
+
+          <div>
             <label className="text-xs font-medium mb-1 block">Title *</label>
             <Input value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="e.g. Mathematics Textbook Form 3" />
           </div>
@@ -118,54 +168,6 @@ export function CreateListingDialog({ schoolId, schoolName, category, onClose, o
           <div>
             <label className="text-xs font-medium mb-1 block">Price (TT$) — optional</label>
             <Input type="number" step="0.01" min="0" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} placeholder="0.00" />
-          </div>
-
-          <div>
-            <label className="text-xs font-medium mb-1 block">Photos</label>
-            <div className="flex flex-wrap gap-2 mb-2">
-              {photos.map((url, i) => (
-                <div key={i} className="relative w-16 h-16 rounded-md overflow-hidden border border-border">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={url} alt="Listing photo" className="w-full h-full object-cover" />
-                  <button
-                    type="button"
-                    onClick={() => setPhotos(photos.filter((_, idx) => idx !== i))}
-                    className="absolute top-0 right-0 bg-black/60 text-white rounded-bl-md p-0.5"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                </div>
-              ))}
-              {photos.length < 5 && (
-                <label className="w-16 h-16 rounded-md border border-dashed border-border flex items-center justify-center cursor-pointer hover:bg-muted transition-colors">
-                  {uploading ? <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" /> : <ImagePlus className="w-5 h-5 text-muted-foreground" />}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    disabled={uploading}
-                    onChange={async (e) => {
-                      const file = e.target.files?.[0];
-                      if (!file) return;
-                      if (photos.length >= 5) {
-                        toast.error('Maximum 5 photos allowed');
-                        e.target.value = '';
-                        return;
-                      }
-                      setUploading(true);
-                      try {
-                        const url = await uploadListingPhoto(file);
-                        setPhotos(prev => [...prev, url]);
-                      } catch {
-                        toast.error('Photo upload failed');
-                      }
-                      setUploading(false);
-                      e.target.value = '';
-                    }}
-                  />
-                </label>
-              )}
-            </div>
           </div>
 
           <div className="border-t border-border pt-4">
