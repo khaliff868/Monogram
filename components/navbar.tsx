@@ -71,6 +71,9 @@ export function Navbar() {
               <Button asChild variant="ghost" size="sm">
                 <Link href="/dashboard"><LayoutDashboard className="w-4 h-4 mr-1" />Dashboard</Link>
               </Button>
+              <span className="text-sm font-medium max-w-[100px] truncate" style={{ color: '#663f30' }} title={user?.username}>
+                {user?.username}
+              </span>
               <Button variant="outline" size="sm" onClick={() => signOut({ redirectTo: '/' })}>
                 <LogOut className="w-4 h-4 mr-1" />Logout
               </Button>
