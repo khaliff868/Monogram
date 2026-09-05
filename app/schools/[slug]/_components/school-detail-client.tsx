@@ -264,23 +264,23 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
                 <div className="bg-card rounded-xl overflow-hidden" style={{ boxShadow: 'var(--shadow-md)' }}>
                   <Tabs value={activeTab} onValueChange={setActiveTab}>
                     <TabsList className="w-full justify-start rounded-none border-b bg-muted/50 p-0 h-auto flex-wrap">
-                      <TabsTrigger value="books" className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
-                        <BookOpen className="w-3.5 h-3.5 mr-1" /> Books
+                      <TabsTrigger value="books" className="rounded-none bg-blue-50 data-[state=active]:bg-blue-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
+                        <BookOpen className="w-3.5 h-3.5 mr-1" /> Text Books
                       </TabsTrigger>
-                      <TabsTrigger value="uniforms" className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
-                        <Shirt className="w-3.5 h-3.5 mr-1" /> Uniforms
+                      <TabsTrigger value="ebooks" className="rounded-none bg-purple-50 data-[state=active]:bg-purple-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
+                        <BookMarked className="w-3.5 h-3.5 mr-1" /> E-Books
                       </TabsTrigger>
-                      <TabsTrigger value="shoes" className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
-                        <ShoppingBag className="w-3.5 h-3.5 mr-1" /> Shoes
-                      </TabsTrigger>
-                      <TabsTrigger value="papers" className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
+                      <TabsTrigger value="papers" className="rounded-none bg-amber-50 data-[state=active]:bg-amber-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
                         <FileText className="w-3.5 h-3.5 mr-1" /> Past Papers
                       </TabsTrigger>
-                      <TabsTrigger value="suppliers" className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
-                        <Store className="w-3.5 h-3.5 mr-1" /> Suppliers
+                      <TabsTrigger value="uniforms" className="rounded-none bg-pink-50 data-[state=active]:bg-pink-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
+                        <Shirt className="w-3.5 h-3.5 mr-1" /> Uniforms
                       </TabsTrigger>
-                      <TabsTrigger value="ebooks" className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
-                        <BookMarked className="w-3.5 h-3.5 mr-1" /> E-Books
+                      <TabsTrigger value="shoes" className="rounded-none bg-green-50 data-[state=active]:bg-green-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
+                        <ShoppingBag className="w-3.5 h-3.5 mr-1" /> Shoes
+                      </TabsTrigger>
+                      <TabsTrigger value="suppliers" className="rounded-none bg-teal-50 data-[state=active]:bg-teal-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
+                        <Store className="w-3.5 h-3.5 mr-1" /> Suppliers
                       </TabsTrigger>
                     </TabsList>
 
