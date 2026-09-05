@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
-import { Smartphone } from 'lucide-react';
+import { Smartphone, BookOpen, Shirt, ShoppingBag } from 'lucide-react';
 
 export interface HomeAd {
   id: string;
@@ -34,16 +34,19 @@ export function HomeAdBanner({ ad, siteUrl }: { ad: HomeAd | null; siteUrl: stri
 
   const bannerInner = (
     <div
-      className="relative w-full h-[120px] sm:h-[150px] md:h-[170px] rounded-xl border border-black/5 shadow-sm flex flex-col items-center justify-center text-center px-6"
-      style={{ background: 'linear-gradient(135deg, #663f30, #4a2d22)' }}
+      className="relative w-full h-[120px] sm:h-[150px] md:h-[170px] rounded-xl border border-black/5 shadow-sm overflow-hidden flex flex-col items-center justify-center text-center px-6"
+      style={{ background: 'linear-gradient(135deg, #a97c5f, #8f6349)' }}
     >
-      <h3 className="font-display font-bold text-white text-lg md:text-2xl mb-1">
+      <BookOpen className="hidden sm:block absolute left-4 top-1/2 -translate-y-1/2 w-16 h-16 md:w-20 md:h-20 text-white/15 -rotate-12" />
+      <Shirt className="hidden sm:block absolute right-6 top-3 w-12 h-12 md:w-14 md:h-14 text-white/15 rotate-12" />
+      <ShoppingBag className="hidden sm:block absolute right-10 bottom-3 w-10 h-10 md:w-12 md:h-12 text-white/15 -rotate-6" />
+      <h3 className="relative font-display font-bold text-white text-lg md:text-2xl mb-1">
         Advertise With <span style={{ color: '#FFA800' }}>MONOGRAM</span>
       </h3>
-      <p className="text-white/70 text-xs md:text-sm mb-3 max-w-md">
+      <p className="relative text-white/80 text-xs md:text-sm mb-3 max-w-md">
         Reach thousands of parents and students across Trinidad &amp; Tobago.
       </p>
-      <span className="inline-block bg-[#FFA800] hover:bg-[#E08E00] text-[#663f30] text-xs md:text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
+      <span className="relative inline-block bg-[#FFA800] hover:bg-[#E08E00] text-[#663f30] text-xs md:text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
         Get in Touch
       </span>
     </div>
