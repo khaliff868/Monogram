@@ -118,8 +118,9 @@
   }
   .bg-pattern-brown-tile {
     background-image: url('/pattern-brown.png');
-    background-size: 300px;
-    background-repeat: repeat;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   }
 }
 @keyframes marquee-ltr {
