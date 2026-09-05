@@ -31,6 +31,7 @@ model User {
   conversationsAsP1 Conversation[] @relation("ConversationParticipant1")
   conversationsAsP2 Conversation[] @relation("ConversationParticipant2")
   sentMessages  Message[]
+  ebooks        EBook[]
 }
 
 model Account {
@@ -94,6 +95,7 @@ model School {
   favorites     FavoriteSchool[]
   recentlyViewed RecentlyViewed[]
   adSchools     AdSchool[]
+  ebooks        EBook[]
   listings      Listing[]
   pastPapers    PastPaper[]
   supplierSchools SupplierSchool[]
@@ -287,6 +289,26 @@ model Message {
   @@index([senderId])
   @@index([createdAt])
   @@index([read])
+}
+
+model EBook {
+  id            String   @id @default(cuid())
+  title         String
+  author        String?
+  description   String?
+  filePath      String?
+  isPublicFile  Boolean  @default(true)
+  downloads     Int      @default(0)
+  status        String   @default("pending") // pending | approved | rejected
+  schoolId      String
+  userId        String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  school School @relation(fields: [schoolId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([schoolId, status])
 }
 
 model Notification {

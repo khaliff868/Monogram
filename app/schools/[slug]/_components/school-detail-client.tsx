@@ -9,11 +9,13 @@ import { FadeIn, SlideIn } from '@/components/ui/animate';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { MapPin, Globe, Phone, Mail, Calendar, Heart, Share2, Download, BookOpen, Shirt, ShoppingBag, FileText, Store, Plus, MessageCircle, Tag, Clock, CheckCircle, User, BadgeCheck, Flag } from 'lucide-react';
+import { MapPin, Globe, Phone, Mail, Calendar, Heart, Share2, Download, BookOpen, Shirt, ShoppingBag, FileText, Store, Plus, MessageCircle, Tag, Clock, CheckCircle, User, BadgeCheck, Flag, BookMarked } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { toast } from 'sonner';
 import { ListingCard } from '@/components/listing-card';
 import { PastPaperList } from '@/components/past-paper-list';
+import { EBookList } from '@/components/ebook-list';
+import { CreateEbookDialog } from '@/components/create-ebook-dialog';
 import { SupplierCard } from '@/components/supplier-card';
 import { CreateListingDialog } from '@/components/create-listing-dialog';
 import { CreatePastPaperDialog } from '@/components/create-past-paper-dialog';
@@ -47,13 +49,16 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
   const [listings, setListings] = useState<any[]>([]);
   const [pastPapers, setPastPapers] = useState<any[]>([]);
   const [suppliers, setSuppliers] = useState<any[]>([]);
+  const [ebooks, setEbooks] = useState<any[]>([]);
   const [showCreateListing, setShowCreateListing] = useState(false);
   const [showCreatePaper, setShowCreatePaper] = useState(false);
   const [showCreateSupplier, setShowCreateSupplier] = useState(false);
+  const [showCreateEbook, setShowCreateEbook] = useState(false);
   const [showReport, setShowReport] = useState(false);
   const [listingsLoading, setListingsLoading] = useState(false);
   const [papersLoading, setPapersLoading] = useState(false);
   const [suppliersLoading, setSuppliersLoading] = useState(false);
+  const [ebooksLoading, setEbooksLoading] = useState(false);
 
   const pageUrl = typeof window !== 'undefined' ? window.location.href : '';
 
@@ -104,6 +109,16 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
     setSuppliersLoading(false);
   }, [school.id]);
 
+  const fetchEbooks = useCallback(async () => {
+    setEbooksLoading(true);
+    try {
+      const res = await fetch(`/api/ebooks?schoolId=${school.id}&status=approved`);
+      const data = await res.json();
+      setEbooks(data.ebooks || []);
+    } catch { setEbooks([]); }
+    setEbooksLoading(false);
+  }, [school.id]);
+
   useEffect(() => {
     if (['books', 'uniforms', 'shoes'].includes(activeTab)) {
       fetchListings(activeTab);
@@ -111,8 +126,10 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
       fetchPapers();
     } else if (activeTab === 'suppliers') {
       fetchSuppliers();
+    } else if (activeTab === 'ebooks') {
+      fetchEbooks();
     }
-  }, [activeTab, fetchListings, fetchPapers, fetchSuppliers]);
+  }, [activeTab, fetchListings, fetchPapers, fetchSuppliers, fetchEbooks]);
 
   const toggleFavorite = async () => {
     if (!session) { toast.error('Please log in to favorite schools'); return; }
@@ -156,6 +173,12 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
     setShowCreateSupplier(false);
     toast.success('Supplier submitted for review!');
     fetchSuppliers();
+  };
+
+  const handleEbookCreated = () => {
+    setShowCreateEbook(false);
+    toast.success('E-book submitted for review!');
+    fetchEbooks();
   };
 
   function EmptyState({ label, icon }: { label: string; icon: React.ReactNode }) {
@@ -256,6 +279,9 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
                       <TabsTrigger value="suppliers" className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
                         <Store className="w-3.5 h-3.5 mr-1" /> Suppliers
                       </TabsTrigger>
+                      <TabsTrigger value="ebooks" className="rounded-none data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
+                        <BookMarked className="w-3.5 h-3.5 mr-1" /> E-Books
+                      </TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="books">{renderListingTab('BOOKS', 'Books', <BookOpen className="w-5 h-5" />)}</TabsContent>
@@ -293,6 +319,22 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
                             {suppliers.map(s => <SupplierCard key={s.id} supplier={s} />)}
                           </div>
                         ) : <EmptyState label="supplier" icon={<Store className="w-5 h-5" />} />}
+                      </div>
+                    </TabsContent>
+
+                    <TabsContent value="ebooks">
+                      <div className="p-4">
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="font-display font-semibold text-sm" style={{ color: '#663f30' }}>E-Books</h3>
+                          {session && (
+                            <Button size="sm" onClick={() => setShowCreateEbook(true)} className="bg-[#663f30] hover:bg-[#533226] text-white text-xs">
+                              <Plus className="w-3.5 h-3.5 mr-1" /> Add E-Book
+                            </Button>
+                          )}
+                        </div>
+                        {ebooksLoading ? <LoadingState /> : ebooks.length > 0 ? (
+                          <EBookList ebooks={ebooks} />
+                        ) : <EmptyState label="e-book" icon={<BookMarked className="w-5 h-5" />} />}
                       </div>
                     </TabsContent>
                   </Tabs>
@@ -389,6 +431,14 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
           schoolName={school.name}
           onClose={() => setShowCreateSupplier(false)}
           onCreated={handleSupplierCreated}
+        />
+      )}
+      {showCreateEbook && (
+        <CreateEbookDialog
+          schoolId={school.id}
+          schoolName={school.name}
+          onClose={() => setShowCreateEbook(false)}
+          onCreated={handleEbookCreated}
         />
       )}
       {showReport && (
