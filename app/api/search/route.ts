@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ schools: [], listings: [], suppliers: [], pastPapers: [] });
   }
 
-  const contains = { contains: q, mode: 'insensitive' as const };
+  const contains = { startsWith: q, mode: 'insensitive' as const };
 
   try {
     const [schools, listings, suppliers, pastPapers] = await Promise.all([
