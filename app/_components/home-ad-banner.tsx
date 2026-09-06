@@ -33,7 +33,7 @@ export function HomeAdBanner({ ad, siteUrl }: { ad: HomeAd | null; siteUrl: stri
   }, [ad]);
 
   const bannerInner = (
-    <div className="relative w-full min-h-[150px] sm:min-h-[160px] md:h-[170px] rounded-xl border border-black/5 shadow-sm overflow-hidden bg-white flex flex-col sm:flex-row items-center justify-center gap-5 sm:gap-8 text-center sm:text-left px-6 py-5">
+    <div className="relative w-full min-h-[150px] sm:min-h-[160px] md:h-[170px] rounded-xl border-2 shadow-sm overflow-hidden bg-white flex flex-col sm:flex-row items-center justify-center gap-5 sm:gap-8 text-center sm:text-left px-6 py-5" style={{ borderColor: '#663f30' }}>
       <div className="hidden sm:flex items-center gap-4 flex-shrink-0">
         <div className="flex flex-col items-center gap-1.5">
           <div className="w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center" style={{ backgroundColor: '#e8f0fe' }}>
@@ -73,7 +73,7 @@ export function HomeAdBanner({ ad, siteUrl }: { ad: HomeAd | null; siteUrl: stri
       <div className="max-w-[1200px] mx-auto px-4">
         <div className="relative flex items-stretch justify-center">
           {/* Get the App / QR column */}
-          <div className="hidden lg:flex flex-col items-center justify-center shrink-0 w-[130px] rounded-xl border border-black/5 bg-white shadow-sm px-3 py-3 absolute left-0 top-1/2 -translate-y-1/2">
+          <div className="hidden lg:flex flex-col items-center justify-center shrink-0 w-[130px] rounded-xl border-2 bg-white shadow-sm px-3 py-3 absolute left-0 top-1/2 -translate-y-1/2" style={{ borderColor: '#663f30' }}>
             <div className="rounded-lg border border-black/5 p-1.5 bg-white">
               <QRCodeSVG value={siteUrl} size={72} bgColor="#ffffff" fgColor="#663f30" />
             </div>
