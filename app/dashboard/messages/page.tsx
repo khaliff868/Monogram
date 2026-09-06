@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { MessageSquare, Search, Clock, ChevronRight, Trash2 } from 'lucide-react';
+import { MessageSquare, Search, Clock, ChevronRight, Trash2, UserPlus, Loader2 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { toast } from 'sonner';
 import { Navbar } from '@/components/navbar';
@@ -26,6 +26,11 @@ export default function MessagesPage() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [newMsgQuery, setNewMsgQuery] = useState('');
+  const [userResults, setUserResults] = useState<{ id: string; username: string }[]>([]);
+  const [searchingUsers, setSearchingUsers] = useState(false);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [startingConvo, setStartingConvo] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
 
   useEffect(() => {
@@ -45,6 +50,48 @@ export default function MessagesPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    const q = newMsgQuery.trim();
+    if (q.length < 2) {
+      setUserResults([]);
+      setShowUserDropdown(false);
+      return;
+    }
+    const timeout = setTimeout(async () => {
+      setSearchingUsers(true);
+      try {
+        const res = await fetch(`/api/users/search?q=${encodeURIComponent(q)}`);
+        const data = await res.json();
+        setUserResults(data.users || []);
+        setShowUserDropdown(true);
+      } catch {
+        setUserResults([]);
+      }
+      setSearchingUsers(false);
+    }, 300);
+    return () => clearTimeout(timeout);
+  }, [newMsgQuery]);
+
+  const handleStartConversation = async (recipientId: string) => {
+    setStartingConvo(recipientId);
+    try {
+      const res = await fetch('/api/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ recipientId }),
+      });
+      if (res.ok) {
+        const conv = await res.json();
+        router.push(`/dashboard/messages/${conv.id}`);
+      } else {
+        toast.error('Could not start conversation');
+      }
+    } catch {
+      toast.error('Could not start conversation');
+    }
+    setStartingConvo(null);
   };
 
   const handleDelete = async (e: React.MouseEvent, conversationId: string) => {
@@ -92,6 +139,40 @@ export default function MessagesPage() {
               <h1 className="font-display text-2xl font-bold" style={{ color: '#663f30' }}>Messages</h1>
               <p className="text-sm text-muted-foreground">Chat with other Monogram users</p>
             </div>
+          </div>
+
+          <div className="relative mb-4">
+            <UserPlus className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Find a user to message..."
+              value={newMsgQuery}
+              onChange={e => setNewMsgQuery(e.target.value)}
+              onFocus={() => { if (userResults.length > 0) setShowUserDropdown(true); }}
+              className="w-full pl-11 pr-4 py-2.5 bg-card border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#FFA800]"
+            />
+            {searchingUsers && (
+              <Loader2 className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground animate-spin" />
+            )}
+            {showUserDropdown && userResults.length > 0 && (
+              <div className="absolute left-0 right-0 top-full mt-1 bg-card rounded-xl border border-border shadow-lg z-20 overflow-hidden">
+                {userResults.map(u => (
+                  <button
+                    key={u.id}
+                    type="button"
+                    disabled={startingConvo === u.id}
+                    onClick={() => handleStartConversation(u.id)}
+                    className="w-full flex items-center gap-3 px-4 py-2.5 text-left hover:bg-muted transition-colors disabled:opacity-50"
+                  >
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0" style={{ background: '#663f30' }}>
+                      {u.username.charAt(0).toUpperCase()}
+                    </div>
+                    <span className="text-sm font-medium">{u.username}</span>
+                    {startingConvo === u.id && <Loader2 className="w-3.5 h-3.5 animate-spin ml-auto text-muted-foreground" />}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="relative mb-6">
