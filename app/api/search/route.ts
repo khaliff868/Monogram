@@ -16,12 +16,7 @@ export async function GET(req: NextRequest) {
       prisma.school.findMany({
         where: {
           visible: true,
-          OR: [
-            { name: contains },
-            { location: contains },
-            { region: contains },
-            { description: contains },
-          ],
+          name: contains,
         },
         select: { id: true, name: true, slug: true, location: true, region: true, type: true, gender: true, initials: true, verified: true },
         take: 20,
@@ -29,7 +24,7 @@ export async function GET(req: NextRequest) {
       prisma.listing.findMany({
         where: {
           status: 'approved',
-          OR: [{ title: contains }, { description: contains }],
+          title: contains,
         },
         select: { id: true, title: true, category: true, price: true, school: { select: { name: true, slug: true } } },
         take: 20,
@@ -37,7 +32,7 @@ export async function GET(req: NextRequest) {
       prisma.supplier.findMany({
         where: {
           status: 'approved',
-          OR: [{ businessName: contains }, { description: contains }, { location: contains }],
+          businessName: contains,
         },
         select: { id: true, businessName: true, location: true, categories: true, verified: true },
         take: 20,
@@ -45,7 +40,7 @@ export async function GET(req: NextRequest) {
       prisma.pastPaper.findMany({
         where: {
           status: 'approved',
-          OR: [{ subject: contains }, { examType: contains }],
+          subject: contains,
         },
         select: { id: true, subject: true, examType: true, year: true, paperNum: true, school: { select: { name: true, slug: true } } },
         take: 20,
