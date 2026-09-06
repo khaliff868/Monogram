@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
-import { Smartphone, BookOpen, Shirt, ShoppingBag } from 'lucide-react';
+import { Smartphone, BookOpen, Shirt, FileText } from 'lucide-react';
 
 export interface HomeAd {
   id: string;
@@ -33,22 +33,38 @@ export function HomeAdBanner({ ad, siteUrl }: { ad: HomeAd | null; siteUrl: stri
   }, [ad]);
 
   const bannerInner = (
-    <div
-      className="relative w-full h-[120px] sm:h-[150px] md:h-[170px] rounded-xl border border-black/5 shadow-sm overflow-hidden flex flex-col items-center justify-center text-center px-6"
-      style={{ background: 'linear-gradient(135deg, #a97c5f, #8f6349)' }}
-    >
-      <BookOpen className="hidden sm:block absolute left-4 top-1/2 -translate-y-1/2 w-16 h-16 md:w-20 md:h-20 text-white/15 -rotate-12" />
-      <Shirt className="hidden sm:block absolute right-6 top-3 w-12 h-12 md:w-14 md:h-14 text-white/15 rotate-12" />
-      <ShoppingBag className="hidden sm:block absolute right-10 bottom-3 w-10 h-10 md:w-12 md:h-12 text-white/15 -rotate-6" />
-      <h3 className="relative font-display font-bold text-white text-lg md:text-2xl mb-1">
-        Advertise With <span style={{ color: '#FFA800' }}>MONOGRAM</span>
-      </h3>
-      <p className="relative text-white/80 text-xs md:text-sm mb-3 max-w-md">
-        Reach thousands of parents and students across Trinidad &amp; Tobago.
-      </p>
-      <span className="relative inline-block bg-[#FFA800] hover:bg-[#E08E00] text-[#663f30] text-xs md:text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
-        Get in Touch
-      </span>
+    <div className="relative w-full min-h-[150px] sm:min-h-[160px] md:h-[170px] rounded-xl border border-black/5 shadow-sm overflow-hidden bg-white flex flex-col sm:flex-row items-center justify-center gap-5 sm:gap-8 text-center sm:text-left px-6 py-5">
+      <div className="hidden sm:flex items-center gap-4 flex-shrink-0">
+        <div className="flex flex-col items-center gap-1.5">
+          <div className="w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center" style={{ backgroundColor: '#e8f0fe' }}>
+            <BookOpen className="w-7 h-7 md:w-8 md:h-8" style={{ color: '#2563eb' }} />
+          </div>
+          <span className="text-[10px] font-medium text-muted-foreground">Books</span>
+        </div>
+        <div className="flex flex-col items-center gap-1.5">
+          <div className="w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center" style={{ backgroundColor: '#fce7f3' }}>
+            <Shirt className="w-7 h-7 md:w-8 md:h-8" style={{ color: '#db2777' }} />
+          </div>
+          <span className="text-[10px] font-medium text-muted-foreground">Uniforms</span>
+        </div>
+        <div className="flex flex-col items-center gap-1.5">
+          <div className="w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center" style={{ backgroundColor: '#fef3c7' }}>
+            <FileText className="w-7 h-7 md:w-8 md:h-8" style={{ color: '#d97706' }} />
+          </div>
+          <span className="text-[10px] font-medium text-muted-foreground">Past Papers</span>
+        </div>
+      </div>
+      <div>
+        <h3 className="font-display font-bold text-lg md:text-2xl mb-1" style={{ color: '#663f30' }}>
+          Advertise With <span style={{ color: '#FFA800' }}>MONOGRAM</span>
+        </h3>
+        <p className="text-muted-foreground text-xs md:text-sm mb-3 max-w-md">
+          Reach thousands of parents and students across Trinidad &amp; Tobago.
+        </p>
+        <span className="inline-block bg-[#FFA800] hover:bg-[#E08E00] text-[#663f30] text-xs md:text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
+          Get in Touch
+        </span>
+      </div>
     </div>
   );
 
