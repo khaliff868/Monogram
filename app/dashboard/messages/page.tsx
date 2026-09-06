@@ -54,7 +54,7 @@ export default function MessagesPage() {
 
   useEffect(() => {
     const q = newMsgQuery.trim();
-    if (q.length < 2) {
+    if (q.length < 1) {
       setUserResults([]);
       setShowUserDropdown(false);
       return;

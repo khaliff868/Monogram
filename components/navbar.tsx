@@ -36,7 +36,7 @@ export function Navbar() {
         </Link>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-1">
+        <nav className="hidden md:flex items-center gap-1 md:ml-8 lg:ml-12">
           <Link href="/" className="px-3 py-2 text-sm font-medium rounded-lg hover:bg-muted transition-colors">Home</Link>
           <Link href="/schools" className="px-3 py-2 text-sm font-medium rounded-lg hover:bg-muted transition-colors">Schools</Link>
           <Link href="/about" className="px-3 py-2 text-sm font-medium rounded-lg hover:bg-muted transition-colors">About</Link>

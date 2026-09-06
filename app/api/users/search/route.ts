@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
   if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const q = (req.nextUrl.searchParams.get('q') || '').trim();
-  if (!q || q.length < 2) {
+  if (!q || q.length < 1) {
     return NextResponse.json({ users: [] });
   }
 

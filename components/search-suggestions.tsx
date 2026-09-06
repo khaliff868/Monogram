@@ -21,7 +21,7 @@ export function SearchSuggestions({ query }: { query: string }) {
   useEffect(() => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     const q = query.trim();
-    if (q.length < 2) {
+    if (q.length < 1) {
       setResults([]);
       setShow(false);
       return;
