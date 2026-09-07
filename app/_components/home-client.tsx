@@ -9,7 +9,7 @@ import { Footer } from '@/components/footer';
 import { SchoolCard } from '@/components/school-card';
 import { AnnouncementBar } from '@/components/announcement-bar';
 import { FadeIn, SlideIn, Stagger, StaggerItem } from '@/components/ui/animate';
-import { HomeAdBanner, type HomeAd } from './home-ad-banner';
+import { HomeAdBanner } from './home-ad-banner';
 import { SearchSuggestions } from '@/components/search-suggestions';
 import { useRouter } from 'next/navigation';
 import { useInView } from 'react-intersection-observer';
@@ -57,7 +57,7 @@ function AnimatedCounter({ target, label, icon }: { target: number; label: strin
   );
 }
 
-export function HomeClient({ schools, schoolCount, memberCount, ad, siteUrl }: { schools: School[]; schoolCount: number; memberCount: number; ad: HomeAd | null; siteUrl: string }) {
+export function HomeClient({ schools, schoolCount, memberCount, siteUrl }: { schools: School[]; schoolCount: number; memberCount: number; siteUrl: string }) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -122,7 +122,7 @@ export function HomeClient({ schools, schoolCount, memberCount, ad, siteUrl }: {
       </section>
 
       {/* Sponsored Banner */}
-      <HomeAdBanner ad={ad} siteUrl={siteUrl} />
+      <HomeAdBanner siteUrl={siteUrl} />
 
       {/* All Schools */}
       <section className="py-16 bg-background">

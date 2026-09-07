@@ -1,10 +1,13 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
-import { Smartphone, BookOpen, Shirt, FileText } from 'lucide-react';
+import { Smartphone, BookOpen, Shirt, FileText, Megaphone } from 'lucide-react';
 
-export interface HomeAd {
+const MAX_POOL = 12;
+const ROTATION_INTERVAL = 5 * 60 * 1000; // 5 minutes
+
+interface HomeAd {
   id: string;
   advertiserName: string;
   imageUrl: string | null;
@@ -22,17 +25,49 @@ function track(adId: string, type: 'impression' | 'click') {
   } catch {}
 }
 
-export function HomeAdBanner({ ad, siteUrl }: { ad: HomeAd | null; siteUrl: string }) {
-  const fired = useRef(false);
+export function HomeAdBanner({ siteUrl }: { siteUrl: string }) {
+  const [pool, setPool] = useState<HomeAd[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [loaded, setLoaded] = useState(false);
+  const firedFor = useRef<string | null>(null);
 
+  // Fetch active ads once, cap pool at MAX_POOL
   useEffect(() => {
-    if (ad && !fired.current) {
-      fired.current = true;
-      track(ad.id, 'impression');
-    }
-  }, [ad]);
+    fetch('/api/ads/active')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.ads && data.ads.length > 0) {
+          setPool(data.ads.slice(0, MAX_POOL));
+        }
+        setLoaded(true);
+      })
+      .catch(() => setLoaded(true));
+  }, []);
 
-  const bannerInner = (
+  // Rotate to next ad every 5 minutes
+  useEffect(() => {
+    if (pool.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % pool.length);
+    }, ROTATION_INTERVAL);
+    return () => clearInterval(interval);
+  }, [pool.length]);
+
+  const currentAd = pool[currentIndex];
+
+  // Track impression whenever the displayed ad changes
+  useEffect(() => {
+    if (currentAd && firedFor.current !== currentAd.id) {
+      firedFor.current = currentAd.id;
+      track(currentAd.id, 'impression');
+    }
+  }, [currentAd]);
+
+  const handleClick = useCallback((adId: string) => {
+    track(adId, 'click');
+  }, []);
+
+  const ctaInner = (
     <div className="relative w-full min-h-[150px] sm:min-h-[160px] md:h-[170px] rounded-xl border-2 shadow-sm overflow-hidden bg-white flex flex-col sm:flex-row items-center justify-center gap-5 sm:gap-8 text-center sm:text-left px-6 py-5" style={{ borderColor: '#663f30' }}>
       <div className="hidden sm:flex items-center gap-4 flex-shrink-0">
         <div className="flex flex-col items-center gap-1.5">
@@ -68,6 +103,27 @@ export function HomeAdBanner({ ad, siteUrl }: { ad: HomeAd | null; siteUrl: stri
     </div>
   );
 
+  const adInner = currentAd && (
+    <div className="relative w-full min-h-[150px] sm:min-h-[160px] md:h-[170px] rounded-xl border-2 shadow-sm overflow-hidden bg-white" style={{ borderColor: '#663f30' }}>
+      <div className="absolute top-2 left-2 z-10 flex items-center gap-1 px-2 py-0.5 bg-black/40 backdrop-blur-sm rounded-full text-[10px] text-white/70 uppercase tracking-wider">
+        <Megaphone className="w-3 h-3" />
+        Sponsored
+      </div>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={currentAd.imageUrl!}
+        alt={currentAd.advertiserName}
+        className="w-full h-full object-cover"
+      />
+    </div>
+  );
+
+  const showAd = loaded && pool.length > 0 && currentAd;
+  const bannerInner = showAd ? adInner : ctaInner;
+  const bannerHref = showAd ? (currentAd!.destinationUrl ?? '#') : '/about';
+  const bannerOnClick = showAd ? () => handleClick(currentAd!.id) : undefined;
+  const bannerTarget = showAd && currentAd!.destinationUrl ? '_blank' : undefined;
+
   return (
     <section className="py-6 bg-background">
       <div className="max-w-[1200px] mx-auto px-4">
@@ -86,7 +142,7 @@ export function HomeAdBanner({ ad, siteUrl }: { ad: HomeAd | null; siteUrl: stri
 
           {/* Banner */}
           <div className="w-full max-w-[900px] mx-auto">
-            <a href="/about" className="block">
+            <a href={bannerHref} target={bannerTarget} rel={bannerTarget ? 'noopener noreferrer sponsored' : undefined} onClick={bannerOnClick} className="block">
               {bannerInner}
             </a>
           </div>
