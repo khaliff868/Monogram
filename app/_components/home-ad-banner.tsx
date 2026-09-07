@@ -113,7 +113,7 @@ export function HomeAdBanner({ siteUrl }: { siteUrl: string }) {
       <img
         src={currentAd.imageUrl!}
         alt={currentAd.advertiserName}
-        className="w-full h-full object-cover"
+        className="w-full h-full object-contain bg-white"
       />
     </div>
   );
