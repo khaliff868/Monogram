@@ -73,7 +73,7 @@ export function HomeAdBanner({ ad, siteUrl }: { ad: HomeAd | null; siteUrl: stri
       <div className="max-w-[1200px] mx-auto px-4">
         <div className="relative flex items-stretch justify-center">
           {/* Get the App / QR column */}
-          <div className="hidden lg:flex flex-col items-center justify-center shrink-0 w-[130px] rounded-xl border-2 bg-white shadow-sm px-3 py-3 absolute left-0 xl:-left-8 2xl:-left-16 top-1/2 -translate-y-1/2" style={{ borderColor: '#663f30' }}>
+          <div className="hidden lg:flex flex-col items-center justify-center shrink-0 w-[130px] rounded-xl border-2 bg-white shadow-sm px-3 py-3 absolute left-0 lg:-left-4 xl:-left-16 2xl:-left-28 top-1/2 -translate-y-1/2" style={{ borderColor: '#663f30' }}>
             <div className="rounded-lg border border-black/5 p-1.5 bg-white">
               <QRCodeSVG value={siteUrl} size={72} bgColor="#ffffff" fgColor="#663f30" />
             </div>
