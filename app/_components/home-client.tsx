@@ -74,7 +74,7 @@ export function HomeClient({ schools, schoolCount, memberCount, siteUrl }: { sch
       <Navbar />
 
       {/* Hero */}
-      <section className="relative bg-pattern-brown-tile overflow-hidden">
+      <section className="relative bg-pattern-brown-tile">
         <div className="max-w-[1200px] mx-auto px-4 pt-[4px] pb-3 md:pt-[6px] md:pb-5 relative z-10">
           <SlideIn from="bottom">
             <div className="text-center max-w-2xl mx-auto">

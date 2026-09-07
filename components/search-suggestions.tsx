@@ -30,7 +30,7 @@ export function SearchSuggestions({ query }: { query: string }) {
       try {
         const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
         const data = await res.json();
-        setResults((data?.schools ?? []).slice(0, 6));
+        setResults((data?.schools ?? []).slice(0, 15));
         setShow(true);
       } catch {
         setResults([]);
@@ -52,7 +52,7 @@ export function SearchSuggestions({ query }: { query: string }) {
   if (!show || results.length === 0) return null;
 
   return (
-    <div ref={containerRef} className="absolute left-0 right-0 top-full mt-1 bg-white rounded-lg shadow-lg border border-border z-50 overflow-hidden">
+    <div ref={containerRef} className="absolute left-0 right-0 top-full mt-1 bg-white rounded-lg shadow-lg border border-border z-[100] max-h-[320px] overflow-y-auto">
       {results.map(school => (
         <button
           key={school.id}
