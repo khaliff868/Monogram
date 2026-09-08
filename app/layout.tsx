@@ -5,6 +5,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { ChunkLoadErrorHandler } from '@/components/chunk-load-error-handler'
 import { MobileBottomNav } from '@/components/mobile-bottom-nav'
 import { PwaInstallBanner } from '@/components/pwa-install-banner'
+import { ServiceWorkerRegister } from '@/components/service-worker-register'
 import Providers from './providers'
 
 export const dynamic = 'force-dynamic';
@@ -67,6 +68,7 @@ export default function RootLayout({
             {children}
             <MobileBottomNav />
             <PwaInstallBanner />
+            <ServiceWorkerRegister />
             <Toaster />
             <ChunkLoadErrorHandler />
           </Providers>
