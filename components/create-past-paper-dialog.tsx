@@ -37,7 +37,7 @@ export function CreatePastPaperDialog({ schoolId, schoolName, onClose, onCreated
   const [loading, setLoading] = useState(false);
   const [entries, setEntries] = useState<FileEntry[]>([]);
 
-  const MAX_FILES = 5;
+  const MAX_FILES = 30;
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = Array.from(e.target.files ?? []);
