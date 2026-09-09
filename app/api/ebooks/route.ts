@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/auth';
+import { notifyAdmins } from '@/lib/notify-admins';
 
 export const dynamic = 'force-dynamic';
 
@@ -37,6 +38,15 @@ export async function POST(req: NextRequest) {
       userId: session.user.id,
       status: 'pending',
     },
+    include: { school: { select: { name: true } } },
   });
+
+  await notifyAdmins({
+    type: 'new_ebook',
+    title: 'New e-book pending approval',
+    message: `"${title}" submitted for ${ebook.school.name}`,
+    link: '/admin/ebooks',
+  });
+
   return NextResponse.json(ebook, { status: 201 });
 }

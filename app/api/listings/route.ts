@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/auth';
+import { notifyAdmins } from '@/lib/notify-admins';
 
 export const dynamic = 'force-dynamic';
 
@@ -66,6 +67,13 @@ export async function POST(req: NextRequest) {
       status: 'pending',
     },
   });
+  await notifyAdmins({
+    type: 'new_listing',
+    title: 'New listing pending approval',
+    message: `"${title}" submitted in ${category}`,
+    link: '/admin/listings',
+  });
+
 
   return NextResponse.json(listing, { status: 201 });
 }
