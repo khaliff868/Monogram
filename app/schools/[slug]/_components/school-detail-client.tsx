@@ -246,7 +246,7 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
                   <Tabs value={activeTab} onValueChange={setActiveTab}>
                     <TabsList className="w-full justify-start rounded-none border-b bg-muted/50 p-0 h-auto flex-wrap">
                       <TabsTrigger value="books" className="rounded-none bg-blue-50 data-[state=active]:bg-blue-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
-                        <BookOpen className="w-3.5 h-3.5 mr-1" /> Text Books
+                        <BookOpen className="w-3.5 h-3.5 mr-1" /> Used Text Books
                       </TabsTrigger>
                       <TabsTrigger value="ebooks" className="rounded-none bg-purple-50 data-[state=active]:bg-purple-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
                         <BookMarked className="w-3.5 h-3.5 mr-1" /> E-Books
