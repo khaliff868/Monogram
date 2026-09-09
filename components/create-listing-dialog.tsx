@@ -14,6 +14,8 @@ const categories = [
   { value: 'SHOES', label: 'Shoes' },
 ];
 
+const examTypes = ['SEA', 'CSEC', 'CAPE'];
+
 const conditions = ['New', 'Like New', 'Used'];
 const MAX_PHOTOS = 3;
 
@@ -35,6 +37,7 @@ export function CreateListingDialog({ schoolId, schoolName, category, onClose, o
     category,
     condition: '',
     price: '',
+    examType: 'CSEC',
     contactPhone: '',
     contactEmail: '',
     contactWhatsApp: '',
@@ -153,16 +156,27 @@ export function CreateListingDialog({ schoolId, schoolName, category, onClose, o
               </select>
             </div>
             <div>
-              <label className="text-xs font-medium mb-1 block">Condition</label>
+              <label className="text-xs font-medium mb-1 block">Level *</label>
               <select
-                value={form.condition}
-                onChange={e => setForm({ ...form, condition: e.target.value })}
+                value={form.examType}
+                onChange={e => setForm({ ...form, examType: e.target.value })}
                 className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FFA800]/50"
               >
-                <option value="">Select...</option>
-                {conditions.map(c => <option key={c} value={c}>{c}</option>)}
+                {examTypes.map(t => <option key={t} value={t}>{t}</option>)}
               </select>
             </div>
+          </div>
+
+          <div>
+            <label className="text-xs font-medium mb-1 block">Condition</label>
+            <select
+              value={form.condition}
+              onChange={e => setForm({ ...form, condition: e.target.value })}
+              className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FFA800]/50"
+            >
+              <option value="">Select...</option>
+              {conditions.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
           </div>
 
           <div>

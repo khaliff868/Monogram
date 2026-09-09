@@ -185,6 +185,7 @@ model Listing {
   contactPhone  String?
   contactEmail  String?
   contactWhatsApp String?
+  examType      String   @default("CSEC") // SEA | CSEC | CAPE
   status        String   @default("pending") // pending | approved | rejected
   schoolId      String
   userId        String
@@ -265,6 +266,7 @@ model EBook {
   filePath      String?
   isPublicFile  Boolean  @default(true)
   downloads     Int      @default(0)
+  examType      String   @default("CSEC") // SEA | CSEC | CAPE
   status        String   @default("pending") // pending | approved | rejected
   schoolId      String
   userId        String

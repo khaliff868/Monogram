@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
   if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const body = await req.json();
-  const { title, description, category, condition, price, photos, contactPhone, contactEmail, contactWhatsApp, schoolId } = body;
+  const { title, description, category, condition, price, photos, contactPhone, contactEmail, contactWhatsApp, schoolId, examType } = body;
 
   if (!title || !category || !schoolId) {
     return NextResponse.json({ error: 'Title, category, and school are required' }, { status: 400 });
@@ -62,6 +62,7 @@ export async function POST(req: NextRequest) {
       contactPhone: contactPhone || null,
       contactEmail: contactEmail || null,
       contactWhatsApp: contactWhatsApp || null,
+      examType: examType || 'CSEC',
       schoolId,
       userId: session.user.id,
       status: 'pending',

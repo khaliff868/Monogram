@@ -18,6 +18,7 @@ interface ListingProps {
     category: string;
     condition: string | null;
     price: number | null;
+    examType?: string;
     contactPhone: string | null;
     contactEmail: string | null;
     contactWhatsApp: string | null;
@@ -47,6 +48,11 @@ export function ListingCard({ listing }: ListingProps) {
         <p className="text-xs text-muted-foreground mb-3 line-clamp-2">{listing.description}</p>
       )}
 
+        {listing.examType && (
+          <span className="text-[10px] px-2 py-0.5 rounded-full font-medium bg-purple-100 text-purple-800">
+            {listing.examType}
+          </span>
+        )}
       <div className="flex flex-wrap items-center gap-1.5 mb-3">
         {listing.condition && (
           <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${conditionColors[listing.condition] || 'bg-gray-100 text-gray-800'}`}>

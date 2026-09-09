@@ -104,6 +104,7 @@ export function AdminEbooksClient() {
                             <BookOpen className="w-4 h-4" style={{ color: '#FFA800' }} />
                             <h3 className="font-semibold text-sm">{ebook.title}</h3>
                             <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${statusColors[ebook.status] || ''}`}>{ebook.status}</span>
+                            <span className="text-[10px] px-2 py-0.5 rounded-full font-medium bg-purple-100 text-purple-800">{ebook.examType}</span>
                           </div>
                           {ebook.author && <p className="text-xs text-muted-foreground mb-1">by {ebook.author}</p>}
                           <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">

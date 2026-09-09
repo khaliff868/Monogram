@@ -178,8 +178,22 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
     );
   }
 
+  const EXAM_ORDER = ['SEA', 'CSEC', 'CAPE'];
   const renderListingTab = (category: string, label: string, icon: React.ReactNode, singular) => {
     const singularLabel = singular ?? label.slice(0, -1);
+    const grouped: Record<string, any[]> = {};
+    for (const l of listings) {
+      const key = l.examType || 'CSEC';
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(l);
+    }
+    const groupKeys = Object.keys(grouped).sort((a, b) => {
+      const ai = EXAM_ORDER.indexOf(a), bi = EXAM_ORDER.indexOf(b);
+      if (ai === -1 && bi === -1) return a.localeCompare(b);
+      if (ai === -1) return 1;
+      if (bi === -1) return -1;
+      return ai - bi;
+    });
     return (
       <div className="p-4">
         <div className="flex items-center justify-between mb-4">
@@ -191,8 +205,15 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
           )}
         </div>
         {listingsLoading ? <LoadingState /> : listings.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {listings.map(l => <ListingCard key={l.id} listing={l} />)}
+          <div className="space-y-5">
+            {groupKeys.map(examType => (
+              <div key={examType}>
+                <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">{examType}</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {grouped[examType].map(l => <ListingCard key={l.id} listing={l} />)}
+                </div>
+              </div>
+            ))}
           </div>
         ) : <EmptyState label={singularLabel.toLowerCase()} icon={icon} />}
       </div>

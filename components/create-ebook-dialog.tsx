@@ -7,6 +7,8 @@ import { X, FileText, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { uploadEbookFile } from '@/lib/supabase-client';
 
+const examTypes = ['SEA', 'CSEC', 'CAPE'];
+
 interface Props {
   schoolId: string;
   schoolName: string;
@@ -18,6 +20,7 @@ interface FileEntry {
   file: File;
   title: string;
   author: string;
+  examType: string;
 }
 
 export function CreateEbookDialog({ schoolId, schoolName, onClose, onCreated }: Props) {
@@ -36,12 +39,13 @@ export function CreateEbookDialog({ schoolId, schoolName, onClose, onCreated }: 
       file,
       title: file.name.replace(/\.[^/.]+$/, ''),
       author: '',
+      examType: 'CSEC',
     }));
     setEntries(prev => [...prev, ...toAdd]);
     e.target.value = '';
   };
 
-  const updateEntry = (index: number, field: 'title' | 'author', value: string) => {
+  const updateEntry = (index: number, field: 'title' | 'author' | 'examType', value: string) => {
     setEntries(prev => prev.map((entry, i) => (i === index ? { ...entry, [field]: value } : entry)));
   };
 
@@ -65,6 +69,7 @@ export function CreateEbookDialog({ schoolId, schoolName, onClose, onCreated }: 
             body: JSON.stringify({
               title: entry.title.trim(),
               author: entry.author.trim() || undefined,
+              examType: entry.examType,
               filePath,
               schoolId,
             }),
@@ -117,6 +122,13 @@ export function CreateEbookDialog({ schoolId, schoolName, onClose, onCreated }: 
                     placeholder="Title *"
                     className="text-sm"
                   />
+                  <select
+                    value={entry.examType}
+                    onChange={e => updateEntry(i, 'examType', e.target.value)}
+                    className="w-full text-sm px-3 py-2 rounded-md border border-border bg-background"
+                  >
+                    {examTypes.map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
                   <Input
                     value={entry.author}
                     onChange={e => updateEntry(i, 'author', e.target.value)}

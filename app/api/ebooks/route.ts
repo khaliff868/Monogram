@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const body = await req.json();
-  const { title, author, description, filePath, isPublicFile, schoolId } = body;
+  const { title, author, description, filePath, isPublicFile, schoolId, examType } = body;
   if (!title || !schoolId) {
     return NextResponse.json({ error: 'Title and school are required' }, { status: 400 });
   }
@@ -34,6 +34,7 @@ export async function POST(req: NextRequest) {
       description: description || null,
       filePath: filePath || null,
       isPublicFile: isPublicFile ?? true,
+      examType: examType || 'CSEC',
       schoolId,
       userId: session.user.id,
       status: 'pending',
