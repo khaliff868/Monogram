@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, GraduationCap, Megaphone, ImageIcon, Users, Settings, ArrowLeft, BookOpen, FileText, Store, Flag, BarChart3, Library } from 'lucide-react';
+import { LayoutDashboard, GraduationCap, Megaphone, ImageIcon, Users, Settings, ArrowLeft, BookOpen, FileText, Flag, BarChart3, Library } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const links = [
@@ -12,7 +12,6 @@ const links = [
   { href: '/admin/listings', label: 'Listings', icon: BookOpen },
   { href: '/admin/past-papers', label: 'Past Papers', icon: FileText },
   { href: '/admin/ebooks', label: 'E-Books', icon: Library },
-  { href: '/admin/suppliers', label: 'Suppliers', icon: Store },
   { href: '/admin/reports', label: 'Reports', icon: Flag },
   { href: '/admin/announcements', label: 'Announcements', icon: Megaphone },
   { href: '/admin/advertisements', label: 'Advertisements', icon: ImageIcon },

@@ -3,12 +3,11 @@
 import { AdminSidebar } from './admin-sidebar';
 import { Navbar } from '@/components/navbar';
 import { FadeIn } from '@/components/ui/animate';
-import { Eye, Heart, Download, Store, MousePointerClick, TrendingUp, BadgeCheck, Clock } from 'lucide-react';
+import { Eye, Heart, Download, MousePointerClick, TrendingUp } from 'lucide-react';
 
 interface AdRow { id: string; advertiserName: string; impressions: number; clicks: number; active: boolean; }
 interface RankRow { name: string; slug: string; count: number; }
 interface PaperRow { id: string; label: string; school: string; downloads: number; }
-interface CatRow { category: string; count: number; }
 
 interface Data {
   ads: AdRow[];
@@ -18,10 +17,6 @@ interface Data {
   topFavorited: RankRow[];
   topPapers: PaperRow[];
   totalDownloads: number;
-  supplierTotal: number;
-  supplierVerified: number;
-  supplierPending: number;
-  supplierCategories: CatRow[];
 }
 
 function StatCard({ label, value, icon, color }: { label: string; value: string | number; icon: React.ReactNode; color: string }) {
@@ -160,29 +155,6 @@ export function AdminAnalyticsClient({ data }: { data: Data }) {
                         ))}
                       </tbody>
                     </table>
-                  </div>
-                )}
-              </div>
-
-              {/* Supplier tools */}
-              <h2 className="font-display text-lg font-semibold text-[#663f30] mb-3">Supplier Insights</h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
-                <StatCard label="Total Suppliers" value={data.supplierTotal} icon={<Store className="w-4 h-4" />} color="#06b6d4" />
-                <StatCard label="Verified" value={data.supplierVerified} icon={<BadgeCheck className="w-4 h-4" />} color="#22c55e" />
-                <StatCard label="Pending Approval" value={data.supplierPending} icon={<Clock className="w-4 h-4" />} color="#f59e0b" />
-              </div>
-              <div className="bg-card rounded-xl p-5" style={{ boxShadow: 'var(--shadow-md)' }}>
-                <h3 className="flex items-center gap-2 font-display font-semibold text-[#663f30] mb-4"><Store className="w-4 h-4 text-[#FFA800]" /> Suppliers by Category</h3>
-                {data.supplierCategories.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">No approved suppliers yet.</p>
-                ) : (
-                  <div className="flex flex-wrap gap-3">
-                    {data.supplierCategories.map((c) => (
-                      <div key={c.category} className="px-4 py-2 rounded-lg bg-muted">
-                        <span className="text-sm font-medium text-[#663f30]">{c.category}</span>
-                        <span className="ml-2 text-sm text-muted-foreground">{c.count}</span>
-                      </div>
-                    ))}
                   </div>
                 )}
               </div>

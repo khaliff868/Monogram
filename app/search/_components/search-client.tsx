@@ -3,16 +3,15 @@
 import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Search, GraduationCap, BookOpen, Store, FileText, Loader2, MapPin, BadgeCheck } from 'lucide-react';
+import { Search, GraduationCap, BookOpen, FileText, Loader2, MapPin, BadgeCheck } from 'lucide-react';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { FadeIn } from '@/components/ui/animate';
 
 interface SchoolResult { id: string; name: string; slug: string; location: string; region: string; type: string; gender: string; initials: string | null; verified?: boolean; }
 interface ListingResult { id: string; title: string; category: string; price: number | null; school: { name: string; slug: string }; }
-interface SupplierResult { id: string; businessName: string; location: string | null; categories: string[]; verified?: boolean; }
 interface PaperResult { id: string; subject: string; examType: string; year: number; paperNum: string | null; school: { name: string; slug: string }; }
-interface Results { schools: SchoolResult[]; listings: ListingResult[]; suppliers: SupplierResult[]; pastPapers: PaperResult[]; }
+interface Results { schools: SchoolResult[]; listings: ListingResult[]; pastPapers: PaperResult[]; }
 
 export function SearchClient() {
   const searchParams = useSearchParams();
@@ -30,7 +29,7 @@ export function SearchClient() {
       const data = await res.json();
       setResults(data);
     } catch {
-      setResults({ schools: [], listings: [], suppliers: [], pastPapers: [] });
+      setResults({ schools: [], listings: [], pastPapers: [] });
     } finally {
       setLoading(false);
     }
@@ -47,7 +46,7 @@ export function SearchClient() {
     router.push(`/search?q=${encodeURIComponent(q)}`);
   };
 
-  const total = results ? results.schools.length + results.listings.length + results.suppliers.length + results.pastPapers.length : 0;
+  const total = results ? results.schools.length + results.listings.length + results.pastPapers.length : 0;
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f8f9fa]">
@@ -55,7 +54,7 @@ export function SearchClient() {
       <main className="flex-1 max-w-[1000px] w-full mx-auto px-4 py-8">
         <FadeIn>
           <h1 className="font-display text-3xl font-bold text-[#663f30] mb-1">Search</h1>
-          <p className="text-muted-foreground mb-6">Find schools, listings, suppliers and past papers.</p>
+          <p className="text-muted-foreground mb-6">Find schools, listings and past papers.</p>
           <form onSubmit={onSubmit} className="relative mb-8">
             <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
             <input
@@ -110,20 +109,6 @@ export function SearchClient() {
                       <p className="font-semibold text-[#663f30]">{l.title}</p>
                       <p className="text-xs text-muted-foreground mt-1">{l.category} · {l.school.name}{l.price != null ? ` · $${l.price}` : ''}</p>
                     </Link>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {results.suppliers.length > 0 && (
-              <section>
-                <h2 className="flex items-center gap-2 font-display text-xl font-semibold text-[#663f30] mb-4"><Store className="w-5 h-5 text-[#FFA800]" /> Suppliers <span className="text-sm font-normal text-muted-foreground">({results.suppliers.length})</span></h2>
-                <div className="grid sm:grid-cols-2 gap-3">
-                  {results.suppliers.map((sp) => (
-                    <div key={sp.id} className="block p-4 bg-white rounded-xl border border-border">
-                      <p className="font-semibold text-[#663f30] flex items-center gap-1">{sp.businessName}{sp.verified && <BadgeCheck className="w-4 h-4 text-[#FFA800]" />}</p>
-                      <p className="text-xs text-muted-foreground mt-1">{sp.categories.join(', ')}{sp.location ? ` · ${sp.location}` : ''}</p>
-                    </div>
                   ))}
                 </div>
               </section>

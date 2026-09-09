@@ -9,17 +9,15 @@ import { FadeIn, SlideIn } from '@/components/ui/animate';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { MapPin, Globe, Phone, Mail, Calendar, Heart, Share2, Download, BookOpen, Shirt, ShoppingBag, FileText, Store, Plus, MessageCircle, Tag, Clock, CheckCircle, User, BadgeCheck, Flag, BookMarked } from 'lucide-react';
+import { MapPin, Globe, Phone, Mail, Calendar, Heart, Share2, Download, BookOpen, Shirt, ShoppingBag, FileText, Plus, MessageCircle, Tag, Clock, CheckCircle, User, BadgeCheck, Flag, BookMarked } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import { toast } from 'sonner';
 import { ListingCard } from '@/components/listing-card';
 import { PastPaperList } from '@/components/past-paper-list';
 import { EBookList } from '@/components/ebook-list';
 import { CreateEbookDialog } from '@/components/create-ebook-dialog';
-import { SupplierCard } from '@/components/supplier-card';
 import { CreateListingDialog } from '@/components/create-listing-dialog';
 import { CreatePastPaperDialog } from '@/components/create-past-paper-dialog';
-import { CreateSupplierDialog } from '@/components/create-supplier-dialog';
 import { ReportDialog } from '@/components/report-dialog';
 
 const QRCodeSVG = dynamic(() => import('qrcode.react').then(m => ({ default: m.QRCodeSVG })), { ssr: false, loading: () => <div className="w-32 h-32 bg-muted animate-pulse rounded" /> });
@@ -48,16 +46,13 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
   const [activeTab, setActiveTab] = useState('books');
   const [listings, setListings] = useState<any[]>([]);
   const [pastPapers, setPastPapers] = useState<any[]>([]);
-  const [suppliers, setSuppliers] = useState<any[]>([]);
   const [ebooks, setEbooks] = useState<any[]>([]);
   const [showCreateListing, setShowCreateListing] = useState(false);
   const [showCreatePaper, setShowCreatePaper] = useState(false);
-  const [showCreateSupplier, setShowCreateSupplier] = useState(false);
   const [showCreateEbook, setShowCreateEbook] = useState(false);
   const [showReport, setShowReport] = useState(false);
   const [listingsLoading, setListingsLoading] = useState(false);
   const [papersLoading, setPapersLoading] = useState(false);
-  const [suppliersLoading, setSuppliersLoading] = useState(false);
   const [ebooksLoading, setEbooksLoading] = useState(false);
 
   const pageUrl = typeof window !== 'undefined' ? window.location.href : '';
@@ -66,6 +61,7 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
     books: 'BOOKS',
     uniforms: 'UNIFORMS',
     shoes: 'SHOES',
+    other: 'OTHER',
   };
 
   // Check favorite status on mount
@@ -99,16 +95,6 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
     setPapersLoading(false);
   }, [school.id]);
 
-  const fetchSuppliers = useCallback(async () => {
-    setSuppliersLoading(true);
-    try {
-      const res = await fetch(`/api/suppliers?schoolId=${school.id}&status=approved`);
-      const data = await res.json();
-      setSuppliers(data.suppliers || []);
-    } catch { setSuppliers([]); }
-    setSuppliersLoading(false);
-  }, [school.id]);
-
   const fetchEbooks = useCallback(async () => {
     setEbooksLoading(true);
     try {
@@ -120,16 +106,14 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
   }, [school.id]);
 
   useEffect(() => {
-    if (['books', 'uniforms', 'shoes'].includes(activeTab)) {
+    if (['books', 'uniforms', 'shoes', 'other'].includes(activeTab)) {
       fetchListings(activeTab);
     } else if (activeTab === 'papers') {
       fetchPapers();
-    } else if (activeTab === 'suppliers') {
-      fetchSuppliers();
     } else if (activeTab === 'ebooks') {
       fetchEbooks();
     }
-  }, [activeTab, fetchListings, fetchPapers, fetchSuppliers, fetchEbooks]);
+  }, [activeTab, fetchListings, fetchPapers, fetchEbooks]);
 
   const toggleFavorite = async () => {
     if (!session) { toast.error('Please log in to favorite schools'); return; }
@@ -169,12 +153,6 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
     fetchPapers();
   };
 
-  const handleSupplierCreated = () => {
-    setShowCreateSupplier(false);
-    toast.success('Supplier submitted for review!');
-    fetchSuppliers();
-  };
-
   const handleEbookCreated = () => {
     setShowCreateEbook(false);
     toast.success('E-book submitted for review!');
@@ -199,23 +177,26 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
     );
   }
 
-  const renderListingTab = (category: string, label: string, icon: React.ReactNode) => (
-    <div className="p-4">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="font-display font-semibold text-sm" style={{ color: '#663f30' }}>{label}</h3>
-        {session && (
-          <Button size="sm" onClick={() => setShowCreateListing(true)} className="bg-[#663f30] hover:bg-[#533226] text-white text-xs">
-            <Plus className="w-3.5 h-3.5 mr-1" /> Add {label.slice(0, -1)}
-          </Button>
-        )}
-      </div>
-      {listingsLoading ? <LoadingState /> : listings.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {listings.map(l => <ListingCard key={l.id} listing={l} />)}
+  const renderListingTab = (category: string, label: string, icon: React.ReactNode, singular) => {
+    const singularLabel = singular ?? label.slice(0, -1);
+    return (
+      <div className="p-4">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-display font-semibold text-sm" style={{ color: '#663f30' }}>{label}</h3>
+          {session && (
+            <Button size="sm" onClick={() => setShowCreateListing(true)} className="bg-[#663f30] hover:bg-[#533226] text-white text-xs">
+              <Plus className="w-3.5 h-3.5 mr-1" /> Add {singularLabel}
+            </Button>
+          )}
         </div>
-      ) : <EmptyState label={label.toLowerCase().slice(0, -1)} icon={icon} />}
-    </div>
-  );
+        {listingsLoading ? <LoadingState /> : listings.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {listings.map(l => <ListingCard key={l.id} listing={l} />)}
+          </div>
+        ) : <EmptyState label={singularLabel.toLowerCase()} icon={icon} />}
+      </div>
+    );
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -279,8 +260,8 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
                       <TabsTrigger value="shoes" className="rounded-none bg-green-50 data-[state=active]:bg-green-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
                         <ShoppingBag className="w-3.5 h-3.5 mr-1" /> Shoes
                       </TabsTrigger>
-                      <TabsTrigger value="suppliers" className="rounded-none bg-teal-50 data-[state=active]:bg-teal-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
-                        <Store className="w-3.5 h-3.5 mr-1" /> Suppliers
+                      <TabsTrigger value="other" className="rounded-none bg-teal-50 data-[state=active]:bg-teal-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
+                        <Tag className="w-3.5 h-3.5 mr-1" /> Other
                       </TabsTrigger>
                     </TabsList>
 
@@ -304,23 +285,7 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
                       </div>
                     </TabsContent>
 
-                    <TabsContent value="suppliers">
-                      <div className="p-4">
-                        <div className="flex items-center justify-between mb-4">
-                          <h3 className="font-display font-semibold text-sm" style={{ color: '#663f30' }}>School Suppliers</h3>
-                          {session && (
-                            <Button size="sm" onClick={() => setShowCreateSupplier(true)} className="bg-[#663f30] hover:bg-[#533226] text-white text-xs">
-                              <Plus className="w-3.5 h-3.5 mr-1" /> Add Supplier
-                            </Button>
-                          )}
-                        </div>
-                        {suppliersLoading ? <LoadingState /> : suppliers.length > 0 ? (
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            {suppliers.map(s => <SupplierCard key={s.id} supplier={s} />)}
-                          </div>
-                        ) : <EmptyState label="supplier" icon={<Store className="w-5 h-5" />} />}
-                      </div>
-                    </TabsContent>
+                    <TabsContent value="other">{renderListingTab('OTHER', 'Other', <Tag className="w-5 h-5" />, 'Other')}</TabsContent>
 
                     <TabsContent value="ebooks">
                       <div className="p-4">
@@ -423,14 +388,6 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
           schoolName={school.name}
           onClose={() => setShowCreatePaper(false)}
           onCreated={handlePaperCreated}
-        />
-      )}
-      {showCreateSupplier && (
-        <CreateSupplierDialog
-          schoolId={school.id}
-          schoolName={school.name}
-          onClose={() => setShowCreateSupplier(false)}
-          onCreated={handleSupplierCreated}
         />
       )}
       {showCreateEbook && (

@@ -25,7 +25,6 @@ model User {
   recentlyViewed RecentlyViewed[]
   listings      Listing[]
   pastPapers    PastPaper[]
-  suppliers     Supplier[]
   notifications Notification[]
   reports       Report[]
   conversationsAsP1 Conversation[] @relation("ConversationParticipant1")
@@ -98,7 +97,6 @@ model School {
   ebooks        EBook[]
   listings      Listing[]
   pastPapers    PastPaper[]
-  supplierSchools SupplierSchool[]
 }
 
 model Announcement {
@@ -220,39 +218,6 @@ model PastPaper {
 
   @@index([schoolId, subject])
   @@index([status])
-}
-
-model Supplier {
-  id            String   @id @default(cuid())
-  businessName  String
-  description   String?
-  categories    String[] // BOOKS | UNIFORMS | SHOES | SUPPLIES | OTHER
-  location      String?
-  phone         String?
-  email         String?
-  whatsApp      String?
-  website       String?
-  verified      Boolean  @default(false)
-  status        String   @default("pending") // pending | approved | rejected
-  userId        String?  // who submitted
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  user           User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
-  supplierSchools SupplierSchool[]
-
-  @@index([status])
-}
-
-model SupplierSchool {
-  id         String @id @default(cuid())
-  supplierId String
-  schoolId   String
-
-  supplier Supplier @relation(fields: [supplierId], references: [id], onDelete: Cascade)
-  school   School   @relation(fields: [schoolId], references: [id], onDelete: Cascade)
-
-  @@unique([supplierId, schoolId])
 }
 
 model Conversation {

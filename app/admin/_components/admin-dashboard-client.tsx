@@ -3,7 +3,7 @@
 import { AdminSidebar } from './admin-sidebar';
 import { Navbar } from '@/components/navbar';
 import { FadeIn } from '@/components/ui/animate';
-import { GraduationCap, Users, Activity, Megaphone, BookOpen, FileText, Store, ImageIcon, Flag } from 'lucide-react';
+import { GraduationCap, Users, Activity, Megaphone, BookOpen, FileText, ImageIcon, Flag } from 'lucide-react';
 
 interface Stats {
   totalSchools: number;
@@ -12,7 +12,6 @@ interface Stats {
   totalListings: number;
   pendingListings: number;
   pastPapers: number;
-  suppliers: number;
   activeAds: number;
   pendingReports: number;
 }
@@ -47,7 +46,6 @@ export function AdminDashboardClient({ stats }: { stats: Stats }) {
                 <StatCard label="Total Listings" value={stats?.totalListings ?? 0} icon={<BookOpen className="w-4 h-4" />} color="#3b82f6" />
                 <StatCard label="Pending Listings" value={stats?.pendingListings ?? 0} icon={<Megaphone className="w-4 h-4" />} color="#f59e0b" />
                 <StatCard label="Past Papers" value={stats?.pastPapers ?? 0} icon={<FileText className="w-4 h-4" />} color="#8b5cf6" />
-                <StatCard label="Suppliers" value={stats?.suppliers ?? 0} icon={<Store className="w-4 h-4" />} color="#06b6d4" />
                 <StatCard label="Pending Reports" value={stats?.pendingReports ?? 0} icon={<Flag className="w-4 h-4" />} color="#dc2626" />
               </div>
             </FadeIn>
