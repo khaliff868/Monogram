@@ -52,7 +52,7 @@ export function SearchSuggestions({ query }: { query: string }) {
   if (!show || results.length === 0) return null;
 
   return (
-    <div ref={containerRef} className="absolute left-0 right-0 top-full mt-1 bg-white rounded-lg shadow-lg border border-border z-[100] max-h-[320px] overflow-y-auto">
+    <div ref={containerRef} className="absolute left-0 right-0 top-full mt-1 bg-white rounded-lg shadow-lg border border-border z-[100] max-h-[320px] overflow-y-auto overflow-x-hidden">
       {results.map(school => (
         <button
           key={school.id}
@@ -67,9 +67,9 @@ export function SearchSuggestions({ query }: { query: string }) {
           <div className="w-8 h-8 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0" style={{ backgroundColor: '#FDF6EC', color: '#663f30', border: '1.5px solid #FFA800' }}>
             {(school.initials ?? school.name?.charAt(0) ?? 'S').slice(0,3)}
           </div>
-          <div className="min-w-0">
-            <div className="text-sm font-medium text-foreground">{school.name}</div>
-            <div className="flex items-center gap-1 text-xs text-muted-foreground truncate">
+          <div className="min-w-0 flex-1">
+            <div className="text-sm font-medium text-foreground break-words">{school.name}</div>
+            <div className="flex items-center gap-1 text-xs text-muted-foreground truncate min-w-0">
               <MapPin className="w-3 h-3 flex-shrink-0" />
               {school.location}
             </div>
