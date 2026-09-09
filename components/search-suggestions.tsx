@@ -68,7 +68,7 @@ export function SearchSuggestions({ query }: { query: string }) {
             {(school.initials ?? school.name?.charAt(0) ?? 'S').slice(0,3)}
           </div>
           <div className="min-w-0">
-            <div className="text-sm font-medium text-foreground truncate">{school.name}</div>
+            <div className="text-sm font-medium text-foreground">{school.name}</div>
             <div className="flex items-center gap-1 text-xs text-muted-foreground truncate">
               <MapPin className="w-3 h-3 flex-shrink-0" />
               {school.location}
