@@ -75,6 +75,7 @@ model School {
   location      String
   region        String
   type          String   // Government | Denominational | Private
+  level         String   @default("Secondary") // Primary | Secondary | Tertiary
   gender        String   // Boys | Girls | Co-ed
   description   String?
   website       String?

@@ -18,14 +18,14 @@ export default async function DashboardPage() {
 
   const favorites = await prisma.favoriteSchool.findMany({
     where: { userId: user?.id },
-    include: { school: { select: { id: true, slug: true, name: true, location: true, type: true, gender: true, initials: true } } },
+    include: { school: { select: { id: true, slug: true, name: true, location: true, type: true, gender: true, initials: true, level: true } } },
     orderBy: { createdAt: 'desc' },
     take: 10,
   });
 
   const recentlyViewed = await prisma.recentlyViewed.findMany({
     where: { userId: user?.id },
-    include: { school: { select: { id: true, slug: true, name: true, location: true, type: true, gender: true, initials: true } } },
+    include: { school: { select: { id: true, slug: true, name: true, location: true, type: true, gender: true, initials: true, level: true } } },
     orderBy: { viewedAt: 'desc' },
     take: 10,
   });

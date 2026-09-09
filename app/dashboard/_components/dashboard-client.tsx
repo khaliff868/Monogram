@@ -188,7 +188,7 @@ export function DashboardClient({ user, favorites, recentlyViewed, notifications
                 ) : (
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                     {(favorites ?? []).map((s: School) => (
-                      <SchoolCard key={s.id} slug={s.slug} name={s.name} location={s.location} type={s.type} gender={s.gender} initials={s.initials} />
+                      <SchoolCard key={s.id} slug={s.slug} name={s.name} location={s.location} type={s.type} gender={s.gender} initials={s.initials} level={s.level} />
                     ))}
                   </div>
                 )}
@@ -262,7 +262,7 @@ export function DashboardClient({ user, favorites, recentlyViewed, notifications
                 ) : (
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                     {(recentlyViewed ?? []).map((s: School) => (
-                      <SchoolCard key={s.id} slug={s.slug} name={s.name} location={s.location} type={s.type} gender={s.gender} initials={s.initials} />
+                      <SchoolCard key={s.id} slug={s.slug} name={s.name} location={s.location} type={s.type} gender={s.gender} initials={s.initials} level={s.level} />
                     ))}
                   </div>
                 )}

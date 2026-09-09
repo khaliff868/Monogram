@@ -9,7 +9,7 @@ export default async function HomePage() {
       where: { visible: true },
       orderBy: { name: 'asc' },
       take: 24,
-      select: { id: true, slug: true, name: true, location: true, type: true, gender: true, initials: true, verified: true },
+      select: { id: true, slug: true, name: true, location: true, type: true, gender: true, initials: true, verified: true, level: true },
     }),
     prisma.school.count({ where: { visible: true } }),
     prisma.user.count(),

@@ -8,6 +8,7 @@ export async function GET(req: NextRequest) {
     const q = url.searchParams.get('q') ?? '';
     const region = url.searchParams.get('region') ?? '';
     const type = url.searchParams.get('type') ?? '';
+    const level = url.searchParams.get('level') ?? '';
     const gender = url.searchParams.get('gender') ?? '';
     const sort = url.searchParams.get('sort') ?? 'A-Z';
 
@@ -20,12 +21,13 @@ export async function GET(req: NextRequest) {
     }
     if (region) where.region = region;
     if (type) where.type = type;
+    if (level) where.level = level;
     if (gender) where.gender = gender;
 
     const schools = await prisma.school.findMany({
       where,
       orderBy: { name: sort === 'Z-A' ? 'desc' : 'asc' },
-      select: { id: true, slug: true, name: true, location: true, region: true, type: true, gender: true, initials: true, verified: true },
+      select: { id: true, slug: true, name: true, location: true, region: true, type: true, gender: true, initials: true, verified: true, level: true },
     });
 
     return NextResponse.json(schools);

@@ -147,7 +147,7 @@ export function HomeClient({ schools, schoolCount, memberCount, siteUrl }: { sch
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
               {(schools ?? []).map((school: School, idx: number) => (
                 <StaggerItem key={school.id} className={idx >= 12 ? 'hidden sm:block' : ''}>
-                  <SchoolCard slug={school.slug} name={school.name} location={school.location} type={school.type} gender={school.gender} initials={school.initials} verified={school.verified} />
+                  <SchoolCard slug={school.slug} name={school.name} location={school.location} type={school.type} gender={school.gender} initials={school.initials} verified={school.verified} level={school.level} />
                 </StaggerItem>
               ))}
             </div>

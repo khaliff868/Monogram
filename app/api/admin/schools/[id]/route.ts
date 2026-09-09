@@ -16,6 +16,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     if (body.location !== undefined) data.location = body.location;
     if (body.region !== undefined) data.region = body.region;
     if (body.type !== undefined) data.type = body.type;
+    if (body.level !== undefined) data.level = body.level;
     if (body.gender !== undefined) data.gender = body.gender;
     if (body.description !== undefined) data.description = body.description || null;
     if (body.website !== undefined) data.website = body.website || null;

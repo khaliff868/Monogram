@@ -20,6 +20,7 @@ interface School {
   location: string;
   region: string;
   type: string;
+  level: string;
   gender: string;
   description: string | null;
   website: string | null;
@@ -32,7 +33,7 @@ interface School {
 }
 
 const emptySchool = {
-  name: '', slug: '', location: '', region: '', type: 'Government', gender: 'Co-ed',
+  name: '', slug: '', location: '', region: '', type: 'Government', level: 'Secondary', gender: 'Co-ed',
   description: '', website: '', phone: '', email: '', established: '', initials: '',
 };
 
@@ -103,6 +104,7 @@ export function AdminSchoolsClient({ schools }: { schools: School[] }) {
       location: school.location,
       region: school.region,
       type: school.type,
+      level: school.level,
       gender: school.gender,
       description: school.description ?? '',
       website: school.website ?? '',
@@ -192,6 +194,11 @@ export function AdminSchoolsClient({ schools }: { schools: School[] }) {
                       <div><Label className="text-xs">Type</Label>
                         <select value={form?.type ?? 'Government'} onChange={e => setForm({ ...(form ?? {}), type: e.target.value })} className="mt-1 w-full text-sm px-3 py-2 rounded-md border border-border bg-background">
                           <option value="Government">Government</option><option value="Denominational">Denominational</option><option value="Private">Private</option><option value="Tertiary">Tertiary</option>
+                        </select>
+                      </div>
+                      <div><Label className="text-xs">Level</Label>
+                        <select value={form?.level ?? 'Secondary'} onChange={e => setForm({ ...(form ?? {}), level: e.target.value })} className="mt-1 w-full text-sm px-3 py-2 rounded-md border border-border bg-background">
+                          <option value="Primary">Primary</option><option value="Secondary">Secondary</option><option value="Tertiary">Tertiary</option>
                         </select>
                       </div>
                       <div><Label className="text-xs">Gender</Label>

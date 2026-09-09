@@ -20,10 +20,12 @@ interface School {
   gender: string;
   initials: string | null;
   verified?: boolean;
+  level?: string;
 }
 
 const REGIONS = ['All Regions', 'Port of Spain', 'San Fernando', 'Arima', 'Chaguanas', 'Diego Martin', 'South Trinidad', 'Tobago', 'Central Trinidad', 'St. Augustine'];
 const TYPES = ['All Types', 'Government', 'Denominational', 'Private', 'Tertiary'];
+const LEVELS = ['All Levels', 'Primary', 'Secondary', 'Tertiary'];
 const GENDERS = ['All', 'Boys', 'Girls', 'Co-ed'];
 const SORTS = ['A-Z', 'Z-A'];
 
@@ -36,6 +38,7 @@ export function SchoolsClient() {
   const [query, setQuery] = useState(initialQ);
   const [region, setRegion] = useState('All Regions');
   const [type, setType] = useState('All Types');
+  const [level, setLevel] = useState('All Levels');
   const [gender, setGender] = useState('All');
   const [sort, setSort] = useState('A-Z');
   const [showFilters, setShowFilters] = useState(false);
@@ -47,6 +50,7 @@ export function SchoolsClient() {
       if (query) params.set('q', query);
       if (region !== 'All Regions') params.set('region', region);
       if (type !== 'All Types') params.set('type', type);
+      if (level !== 'All Levels') params.set('level', level);
       if (gender !== 'All') params.set('gender', gender);
       params.set('sort', sort);
       const res = await fetch(`/api/schools?${params.toString()}`);
@@ -56,7 +60,7 @@ export function SchoolsClient() {
       setSchools([]);
     }
     setLoading(false);
-  }, [query, region, type, gender, sort]);
+  }, [query, region, type, level, gender, sort]);
 
   useEffect(() => {
     fetchSchools();
@@ -103,6 +107,9 @@ export function SchoolsClient() {
                 <select value={type} onChange={e => setType(e.target.value)} className="text-sm px-3 py-1.5 rounded-md border border-border bg-card">
                   {TYPES.map(t => <option key={t} value={t}>{t}</option>)}
                 </select>
+                <select value={level} onChange={e => setLevel(e.target.value)} className="text-sm px-3 py-1.5 rounded-md border border-border bg-card">
+                  {LEVELS.map(l => <option key={l} value={l}>{l}</option>)}
+                </select>
                 <select value={gender} onChange={e => setGender(e.target.value)} className="text-sm px-3 py-1.5 rounded-md border border-border bg-card">
                   {GENDERS.map(g => <option key={g} value={g}>{g}</option>)}
                 </select>
@@ -140,6 +147,7 @@ export function SchoolsClient() {
                       gender={school.gender}
                       initials={school.initials}
                       verified={school.verified}
+                      level={school.level}
                     />
                   </StaggerItem>
                 ))}

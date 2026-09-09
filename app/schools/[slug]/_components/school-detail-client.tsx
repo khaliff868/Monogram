@@ -140,6 +140,7 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
   };
 
   const typeColor = school?.type === 'Government' ? 'bg-blue-100 text-blue-800' : school?.type === 'Denominational' ? 'bg-amber-100 text-amber-800' : 'bg-green-100 text-green-800';
+  const crestBorderColor = school?.level === 'Primary' ? '#9333ea' : school?.type === 'Government' ? '#1e40af' : school?.type === 'Denominational' ? '#f59e0b' : '#16a34a';
 
   const handleListingCreated = () => {
     setShowCreateListing(false);
@@ -207,10 +208,13 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
         <div className="max-w-[1200px] mx-auto px-4">
           <SlideIn from="bottom">
             <div className="flex flex-col md:flex-row items-center gap-6">
-              <MonogramCrest initials={school?.initials ?? school?.name?.charAt?.(0) ?? 'S'} size={120} />
+              <MonogramCrest initials={school?.initials ?? school?.name?.charAt?.(0) ?? 'S'} size={120} borderColor={crestBorderColor} />
               <div className="text-center md:text-left">
                 <h1 className="font-display text-3xl md:text-4xl font-bold text-white tracking-tight mb-2">{school?.name}</h1>
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 mb-3">
+                  {school?.level && school.level !== 'Secondary' && (
+                    <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${school.level === 'Primary' ? 'bg-purple-100 text-purple-800' : 'bg-green-100 text-green-800'}`}>{school.level}</span>
+                  )}
                   <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${typeColor}`}>{school?.type}</span>
                   <span className="text-xs px-2.5 py-1 rounded-full font-medium bg-white/10 text-white">{school?.gender}</span>
                   {school?.verified && (

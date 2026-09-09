@@ -14,11 +14,12 @@ interface SchoolCardProps {
   gender: string;
   initials: string | null;
   verified?: boolean;
+  level?: string;
 }
 
-export function SchoolCard({ slug, name, location, type, gender, initials, verified }: SchoolCardProps) {
+export function SchoolCard({ slug, name, location, type, gender, initials, verified, level }: SchoolCardProps) {
   const typeColor = type === 'Government' ? 'bg-blue-100 text-blue-800' : type === 'Denominational' ? 'bg-amber-100 text-amber-800' : 'bg-green-100 text-green-800';
-  const crestBorderColor = type === 'Government' ? '#1e40af' : type === 'Denominational' ? '#f59e0b' : '#16a34a';
+  const crestBorderColor = level === 'Primary' ? '#9333ea' : type === 'Government' ? '#1e40af' : type === 'Denominational' ? '#f59e0b' : '#16a34a';
 
   return (
     <HoverLift>
@@ -41,6 +42,9 @@ export function SchoolCard({ slug, name, location, type, gender, initials, verif
               <span>{location}</span>
             </div>
             <div className="flex items-center gap-1.5 flex-wrap mb-3">
+              {level && level !== 'Secondary' && (
+                <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${level === 'Primary' ? 'bg-purple-100 text-purple-800' : 'bg-green-100 text-green-800'}`}>{level}</span>
+              )}
               <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${typeColor}`}>{type}</span>
               <span className="text-[10px] px-2 py-0.5 rounded-full font-medium bg-muted text-muted-foreground">{gender}</span>
             </div>
