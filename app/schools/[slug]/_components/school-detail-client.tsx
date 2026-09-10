@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
+import { isStaff } from '@/lib/roles';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
 import { MonogramCrest } from '@/components/monogram-crest';
@@ -183,7 +184,7 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
     <div className="p-4">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-display font-semibold text-sm" style={{ color: '#663f30' }}>{label}</h3>
-        {session && (
+        {isStaff((session?.user as any)?.role) && (
           <Button size="sm" onClick={() => setShowCreatePaper(true)} className="bg-[#663f30] hover:bg-[#533226] text-white text-xs">
             <Plus className="w-3.5 h-3.5 mr-1" /> Add Paper
           </Button>
@@ -338,7 +339,7 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
                       <div className="p-4">
                         <div className="flex items-center justify-between mb-4">
                           <h3 className="font-display font-semibold text-sm" style={{ color: '#663f30' }}>E-Books</h3>
-                          {session && (
+                          {isStaff((session?.user as any)?.role) && (
                             <Button size="sm" onClick={() => setShowCreateEbook(true)} className="bg-[#663f30] hover:bg-[#533226] text-white text-xs">
                               <Plus className="w-3.5 h-3.5 mr-1" /> Add E-Book
                             </Button>

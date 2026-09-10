@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/auth';
 import { notifyAdmins } from '@/lib/notify-admins';
+import { isStaff } from '@/lib/roles';
 
 export const dynamic = 'force-dynamic';
 
@@ -28,7 +29,9 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const session = await auth();
-  if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const user = session?.user as any;
+  if (!user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!isStaff(user.role)) return NextResponse.json({ error: 'Only admins and moderators can add past papers' }, { status: 403 });
 
   const body = await req.json();
   const { subject, examType, year, paperNum, filePath, isPublicFile } = body;
