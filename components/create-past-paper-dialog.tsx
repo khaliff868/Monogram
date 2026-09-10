@@ -16,8 +16,6 @@ const subjects = [
 ];
 
 interface Props {
-  schoolId: string;
-  schoolName: string;
   defaultExamType: string;
   onClose: () => void;
   onCreated: () => void;
@@ -32,7 +30,7 @@ interface FileEntry {
 
 const years = Array.from({ length: 30 }, (_, i) => 2026 - i);
 
-export function CreatePastPaperDialog({ schoolId, schoolName, defaultExamType, onClose, onCreated }: Props) {
+export function CreatePastPaperDialog({ defaultExamType, onClose, onCreated }: Props) {
   const [loading, setLoading] = useState(false);
   const [entries, setEntries] = useState<FileEntry[]>([]);
 
@@ -81,7 +79,6 @@ export function CreatePastPaperDialog({ schoolId, schoolName, defaultExamType, o
               year: entry.year,
               paperNum: entry.paperNum || undefined,
               filePath,
-              schoolId,
             }),
           });
           if (res.ok) successCount++;
@@ -109,7 +106,7 @@ export function CreatePastPaperDialog({ schoolId, schoolName, defaultExamType, o
         </div>
 
         <form onSubmit={handleSubmit} className="p-4 space-y-4">
-          <p className="text-xs text-muted-foreground">Submit {defaultExamType} past papers for <strong>{schoolName}</strong>. Papers go through admin review.</p>
+          <p className="text-xs text-muted-foreground">Submit {defaultExamType} past papers to the shared library. Papers go through admin review and become available to every school.</p>
           <p className="text-xs text-amber-600 bg-amber-50 rounded-md p-2">Please ensure you have permission to share this paper. Do not upload copyrighted material without authorization.</p>
 
           <div>

@@ -6,7 +6,7 @@ import { Navbar } from '@/components/navbar';
 import { FadeIn } from '@/components/ui/animate';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { CheckCircle, XCircle, Trash2, Search, FileText, GraduationCap, User } from 'lucide-react';
+import { CheckCircle, XCircle, Trash2, Search, FileText, User } from 'lucide-react';
 import { toast } from 'sonner';
 
 const statusColors: Record<string, string> = {
@@ -59,7 +59,6 @@ export function AdminPastPapersClient() {
 
   const filtered = papers.filter(p =>
     p.subject?.toLowerCase().includes(search.toLowerCase()) ||
-    p.school?.name?.toLowerCase().includes(search.toLowerCase()) ||
     p.examType?.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -107,7 +106,6 @@ export function AdminPastPapersClient() {
                           </div>
                           {paper.paperNum && <p className="text-xs text-muted-foreground mb-1">{paper.paperNum}</p>}
                           <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
-                            <span className="flex items-center gap-1"><GraduationCap className="w-3 h-3" />{paper.school?.name}</span>
                             {paper.user && <span className="flex items-center gap-1"><User className="w-3 h-3" />{paper.user.username}</span>}
                             <span>{paper.downloads} downloads</span>
                           </div>

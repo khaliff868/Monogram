@@ -25,7 +25,7 @@ export default async function AdminAnalyticsPage() {
     prisma.schoolPageView.count({ where: { viewedAt: { gte: thirtyDaysAgo } } }),
     prisma.schoolPageView.groupBy({ by: ['schoolId'], _count: { schoolId: true }, orderBy: { _count: { schoolId: 'desc' } }, take: 10 }),
     prisma.favoriteSchool.groupBy({ by: ['schoolId'], _count: { schoolId: true }, orderBy: { _count: { schoolId: 'desc' } }, take: 10 }),
-    prisma.pastPaper.findMany({ where: { status: 'approved' }, select: { id: true, subject: true, examType: true, year: true, downloads: true, school: { select: { name: true } } }, orderBy: { downloads: 'desc' }, take: 10 }),
+    prisma.pastPaper.findMany({ where: { status: 'approved' }, select: { id: true, subject: true, examType: true, year: true, downloads: true }, orderBy: { downloads: 'desc' }, take: 10 }),
     prisma.pastPaper.aggregate({ _sum: { downloads: true } }),
   ]);
 
@@ -53,7 +53,7 @@ export default async function AdminAnalyticsPage() {
         views30d,
         topViewed,
         topFavorited,
-        topPapers: topPapers.map((p) => ({ id: p.id, label: `${p.subject} — ${p.examType} ${p.year}`, school: p.school.name, downloads: p.downloads })),
+        topPapers: topPapers.map((p) => ({ id: p.id, label: `${p.subject} — ${p.examType} ${p.year}`, downloads: p.downloads })),
         totalDownloads: totalDownloads._sum.downloads || 0,
       }}
     />

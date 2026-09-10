@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
           status: 'approved',
           subject: contains,
         },
-        select: { id: true, subject: true, examType: true, year: true, paperNum: true, school: { select: { name: true, slug: true } } },
+        select: { id: true, subject: true, examType: true, year: true, paperNum: true },
         take: 20,
       }),
     ]);

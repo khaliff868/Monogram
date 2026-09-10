@@ -7,7 +7,7 @@ import { Eye, Heart, Download, MousePointerClick, TrendingUp } from 'lucide-reac
 
 interface AdRow { id: string; advertiserName: string; impressions: number; clicks: number; active: boolean; }
 interface RankRow { name: string; slug: string; count: number; }
-interface PaperRow { id: string; label: string; school: string; downloads: number; }
+interface PaperRow { id: string; label: string; downloads: number; }
 
 interface Data {
   ads: AdRow[];
@@ -141,7 +141,6 @@ export function AdminAnalyticsClient({ data }: { data: Data }) {
                       <thead>
                         <tr className="border-b border-border text-left text-xs text-muted-foreground">
                           <th className="px-4 py-3 font-medium">Paper</th>
-                          <th className="px-4 py-3 font-medium">School</th>
                           <th className="px-4 py-3 font-medium text-right">Downloads</th>
                         </tr>
                       </thead>
@@ -149,7 +148,6 @@ export function AdminAnalyticsClient({ data }: { data: Data }) {
                         {data.topPapers.map((p) => (
                           <tr key={p.id} className="border-b border-border last:border-0">
                             <td className="px-4 py-3 font-medium text-[#663f30]">{p.label}</td>
-                            <td className="px-4 py-3 text-muted-foreground">{p.school}</td>
                             <td className="px-4 py-3 text-right">{p.downloads.toLocaleString('en-US')}</td>
                           </tr>
                         ))}

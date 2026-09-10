@@ -10,7 +10,7 @@ import { FadeIn } from '@/components/ui/animate';
 
 interface SchoolResult { id: string; name: string; slug: string; location: string; region: string; type: string; gender: string; initials: string | null; verified?: boolean; }
 interface ListingResult { id: string; title: string; category: string; price: number | null; school: { name: string; slug: string }; }
-interface PaperResult { id: string; subject: string; examType: string; year: number; paperNum: string | null; school: { name: string; slug: string }; }
+interface PaperResult { id: string; subject: string; examType: string; year: number; paperNum: string | null; }
 interface Results { schools: SchoolResult[]; listings: ListingResult[]; pastPapers: PaperResult[]; }
 
 export function SearchClient() {
@@ -119,10 +119,10 @@ export function SearchClient() {
                 <h2 className="flex items-center gap-2 font-display text-xl font-semibold text-[#663f30] mb-4"><FileText className="w-5 h-5 text-[#FFA800]" /> Past Papers <span className="text-sm font-normal text-muted-foreground">({results.pastPapers.length})</span></h2>
                 <div className="grid sm:grid-cols-2 gap-3">
                   {results.pastPapers.map((p) => (
-                    <Link key={p.id} href={`/schools/${p.school.slug}`} className="block p-4 bg-white rounded-xl border border-border hover:shadow-md transition">
+                    <div key={p.id} className="block p-4 bg-white rounded-xl border border-border">
                       <p className="font-semibold text-[#663f30]">{p.subject} — {p.examType} {p.year}</p>
-                      <p className="text-xs text-muted-foreground mt-1">{p.paperNum ? `${p.paperNum} · ` : ''}{p.school.name}</p>
-                    </Link>
+                      {p.paperNum && <p className="text-xs text-muted-foreground mt-1">{p.paperNum}</p>}
+                    </div>
                   ))}
                 </div>
               </section>

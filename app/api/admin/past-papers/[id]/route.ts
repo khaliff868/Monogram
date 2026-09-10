@@ -13,7 +13,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   const { id } = await params;
   const body = await req.json();
 
-  const oldPaper = await prisma.pastPaper.findUnique({ where: { id }, include: { school: { select: { name: true, slug: true } } } });
+  const oldPaper = await prisma.pastPaper.findUnique({ where: { id } });
   const paper = await prisma.pastPaper.update({ where: { id }, data: body });
 
   if (body.status && oldPaper && oldPaper.userId && body.status !== oldPaper.status) {
@@ -24,9 +24,8 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         type: isApproved ? 'listing_approved' : 'listing_rejected',
         title: isApproved ? 'Past Paper Approved!' : 'Past Paper Not Approved',
         message: isApproved
-          ? `Your past paper (${oldPaper.subject} ${oldPaper.examType} ${oldPaper.year}) for ${oldPaper.school?.name} has been approved.`
-          : `Your past paper (${oldPaper.subject} ${oldPaper.examType} ${oldPaper.year}) for ${oldPaper.school?.name} was not approved.`,
-        link: isApproved ? `/schools/${oldPaper.school?.slug}` : undefined,
+          ? `Your past paper (${oldPaper.subject} ${oldPaper.examType} ${oldPaper.year}) has been approved.`
+          : `Your past paper (${oldPaper.subject} ${oldPaper.examType} ${oldPaper.year}) was not approved.`,
       },
     }).catch(() => {});
   }

@@ -17,7 +17,6 @@ export async function GET(req: NextRequest) {
   const papers = await prisma.pastPaper.findMany({
     where,
     include: {
-      school: { select: { name: true, slug: true } },
       user: { select: { username: true, email: true } },
     },
     orderBy: { createdAt: 'desc' },

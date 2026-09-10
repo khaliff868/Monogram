@@ -7,21 +7,19 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
   const url = req.nextUrl;
-  const schoolId = url.searchParams.get('schoolId');
   const subject = url.searchParams.get('subject');
   const examType = url.searchParams.get('examType');
   const year = url.searchParams.get('year');
   const status = url.searchParams.get('status') || 'approved';
 
   const where: any = { status };
-  if (schoolId) where.schoolId = schoolId;
   if (subject) where.subject = subject;
   if (examType) where.examType = examType;
   if (year) where.year = parseInt(year);
 
   const papers = await prisma.pastPaper.findMany({
     where,
-    include: { school: { select: { name: true, slug: true, initials: true } }, user: { select: { id: true, username: true } } },
+    include: { user: { select: { id: true, username: true } } },
     orderBy: [{ year: 'desc' }, { subject: 'asc' }],
   });
 
@@ -33,10 +31,10 @@ export async function POST(req: NextRequest) {
   if (!session?.user?.id) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const body = await req.json();
-  const { subject, examType, year, paperNum, filePath, isPublicFile, schoolId } = body;
+  const { subject, examType, year, paperNum, filePath, isPublicFile } = body;
 
-  if (!subject || !examType || !year || !schoolId) {
-    return NextResponse.json({ error: 'Subject, exam type, year, and school are required' }, { status: 400 });
+  if (!subject || !examType || !year) {
+    return NextResponse.json({ error: 'Subject, exam type, and year are required' }, { status: 400 });
   }
 
   const paper = await prisma.pastPaper.create({
@@ -47,17 +45,15 @@ export async function POST(req: NextRequest) {
       paperNum: paperNum || null,
       filePath: filePath || null,
       isPublicFile: isPublicFile ?? true,
-      schoolId,
       userId: session.user.id,
       status: 'pending',
     },
-    include: { school: { select: { name: true } } },
   });
 
   await notifyAdmins({
     type: 'new_past_paper',
     title: 'New past paper pending approval',
-    message: `${subject} (${examType}, ${year}) submitted for ${paper.school.name}`,
+    message: `${subject} (${examType}, ${year}) submitted to the shared library`,
     link: '/admin/past-papers',
   });
 

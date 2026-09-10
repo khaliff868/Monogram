@@ -44,6 +44,7 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
   const [isFavorited, setIsFavorited] = useState(false);
   const [showQR, setShowQR] = useState(false);
   const [activeTab, setActiveTab] = useState('books');
+  const allowedExamTypes = school?.level === 'Primary' ? ['SEA'] : school?.level === 'Tertiary' ? ['CAPE'] : ['CSEC', 'CAPE'];
   const [listings, setListings] = useState<any[]>([]);
   const [pastPapers, setPastPapers] = useState<any[]>([]);
   const [ebooks, setEbooks] = useState<any[]>([]);
@@ -88,7 +89,7 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
   const fetchPapers = useCallback(async (examType: string) => {
     setPapersLoading(true);
     try {
-      const res = await fetch(`/api/past-papers?schoolId=${school.id}&status=approved&examType=${examType}`);
+      const res = await fetch(`/api/past-papers?status=approved&examType=${examType}`);
       const data = await res.json();
       setPastPapers(data.papers || []);
     } catch { setPastPapers([]); }
@@ -295,15 +296,21 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
                       <div className="flex flex-col items-start bg-amber-50/60 px-2 pt-1.5">
                         <span className="text-[10px] font-medium text-amber-800/70 uppercase tracking-wide px-1 mb-0.5">Past Papers</span>
                         <div className="flex">
-                          <TabsTrigger value="sea" className="rounded-none bg-amber-50 data-[state=active]:bg-amber-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-2.5 text-xs">
-                            <FileText className="w-3.5 h-3.5 mr-1" /> SEA
-                          </TabsTrigger>
-                          <TabsTrigger value="csec" className="rounded-none bg-amber-50 data-[state=active]:bg-amber-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-2.5 text-xs">
-                            <FileText className="w-3.5 h-3.5 mr-1" /> CSEC
-                          </TabsTrigger>
-                          <TabsTrigger value="cape" className="rounded-none bg-amber-50 data-[state=active]:bg-amber-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-2.5 text-xs">
-                            <FileText className="w-3.5 h-3.5 mr-1" /> CAPE
-                          </TabsTrigger>
+                          {allowedExamTypes.includes('SEA') && (
+                            <TabsTrigger value="sea" className="rounded-none bg-amber-50 data-[state=active]:bg-amber-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-2.5 text-xs">
+                              <FileText className="w-3.5 h-3.5 mr-1" /> SEA
+                            </TabsTrigger>
+                          )}
+                          {allowedExamTypes.includes('CSEC') && (
+                            <TabsTrigger value="csec" className="rounded-none bg-amber-50 data-[state=active]:bg-amber-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-2.5 text-xs">
+                              <FileText className="w-3.5 h-3.5 mr-1" /> CSEC
+                            </TabsTrigger>
+                          )}
+                          {allowedExamTypes.includes('CAPE') && (
+                            <TabsTrigger value="cape" className="rounded-none bg-amber-50 data-[state=active]:bg-amber-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-2.5 text-xs">
+                              <FileText className="w-3.5 h-3.5 mr-1" /> CAPE
+                            </TabsTrigger>
+                          )}
                         </div>
                       </div>
                       <TabsTrigger value="uniforms" className="rounded-none bg-pink-50 data-[state=active]:bg-pink-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
@@ -321,9 +328,9 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
                     <TabsContent value="uniforms">{renderListingTab('UNIFORMS', 'Uniforms', <Shirt className="w-5 h-5" />)}</TabsContent>
                     <TabsContent value="shoes">{renderListingTab('SHOES', 'Shoes', <ShoppingBag className="w-5 h-5" />)}</TabsContent>
 
-                    <TabsContent value="sea">{renderPapersTab('SEA', 'SEA')}</TabsContent>
-                    <TabsContent value="csec">{renderPapersTab('CSEC', 'CSEC')}</TabsContent>
-                    <TabsContent value="cape">{renderPapersTab('CAPE', 'CAPE')}</TabsContent>
+                    {allowedExamTypes.includes('SEA') && <TabsContent value="sea">{renderPapersTab('SEA', 'SEA')}</TabsContent>}
+                    {allowedExamTypes.includes('CSEC') && <TabsContent value="csec">{renderPapersTab('CSEC', 'CSEC')}</TabsContent>}
+                    {allowedExamTypes.includes('CAPE') && <TabsContent value="cape">{renderPapersTab('CAPE', 'CAPE')}</TabsContent>}
 
                     <TabsContent value="other">{renderListingTab('OTHER', 'Other', <Tag className="w-5 h-5" />, 'Other')}</TabsContent>
 
@@ -424,9 +431,7 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
       )}
       {showCreatePaper && (
         <CreatePastPaperDialog
-          schoolId={school.id}
-          schoolName={school.name}
-          defaultExamType={['sea', 'csec', 'cape'].includes(activeTab) ? activeTab.toUpperCase() : 'CSEC'}
+          defaultExamType={['sea', 'csec', 'cape'].includes(activeTab) ? activeTab.toUpperCase() : allowedExamTypes[0]}
           onClose={() => setShowCreatePaper(false)}
           onCreated={handlePaperCreated}
         />
