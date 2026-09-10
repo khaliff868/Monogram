@@ -14,8 +14,6 @@ const categories = [
   { value: 'SHOES', label: 'Shoes' },
 ];
 
-const examTypes = ['SEA', 'CSEC', 'CAPE'];
-
 const conditions = ['New', 'Like New', 'Used'];
 const MAX_PHOTOS = 3;
 
@@ -23,11 +21,12 @@ interface Props {
   schoolId: string;
   schoolName: string;
   category: string;
+  allowedExamTypes: string[];
   onClose: () => void;
   onCreated: () => void;
 }
 
-export function CreateListingDialog({ schoolId, schoolName, category, onClose, onCreated }: Props) {
+export function CreateListingDialog({ schoolId, schoolName, category, allowedExamTypes, onClose, onCreated }: Props) {
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [photos, setPhotos] = useState<string[]>([]);
@@ -37,7 +36,7 @@ export function CreateListingDialog({ schoolId, schoolName, category, onClose, o
     category,
     condition: '',
     price: '',
-    examType: 'CSEC',
+    examType: allowedExamTypes[0] || 'CSEC',
     contactPhone: '',
     contactEmail: '',
     contactWhatsApp: '',
@@ -162,7 +161,7 @@ export function CreateListingDialog({ schoolId, schoolName, category, onClose, o
                 onChange={e => setForm({ ...form, examType: e.target.value })}
                 className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FFA800]/50"
               >
-                {examTypes.map(t => <option key={t} value={t}>{t}</option>)}
+                {allowedExamTypes.map(t => <option key={t} value={t}>{t}</option>)}
               </select>
             </div>
           </div>

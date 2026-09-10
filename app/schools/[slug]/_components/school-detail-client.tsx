@@ -425,6 +425,7 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
           schoolId={school.id}
           schoolName={school.name}
           category={categoryMap[activeTab] || 'BOOKS'}
+          allowedExamTypes={allowedExamTypes}
           onClose={() => setShowCreateListing(false)}
           onCreated={handleListingCreated}
         />
@@ -440,6 +441,7 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
         <CreateEbookDialog
           schoolId={school.id}
           schoolName={school.name}
+          allowedExamTypes={allowedExamTypes}
           onClose={() => setShowCreateEbook(false)}
           onCreated={handleEbookCreated}
         />

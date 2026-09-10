@@ -7,11 +7,10 @@ import { X, FileText, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { uploadEbookFile } from '@/lib/supabase-client';
 
-const examTypes = ['SEA', 'CSEC', 'CAPE'];
-
 interface Props {
   schoolId: string;
   schoolName: string;
+  allowedExamTypes: string[];
   onClose: () => void;
   onCreated: () => void;
 }
@@ -23,7 +22,7 @@ interface FileEntry {
   examType: string;
 }
 
-export function CreateEbookDialog({ schoolId, schoolName, onClose, onCreated }: Props) {
+export function CreateEbookDialog({ schoolId, schoolName, allowedExamTypes, onClose, onCreated }: Props) {
   const [loading, setLoading] = useState(false);
   const [entries, setEntries] = useState<FileEntry[]>([]);
 
@@ -39,7 +38,7 @@ export function CreateEbookDialog({ schoolId, schoolName, onClose, onCreated }: 
       file,
       title: file.name.replace(/\.[^/.]+$/, ''),
       author: '',
-      examType: 'CSEC',
+      examType: allowedExamTypes[0] || 'CSEC',
     }));
     setEntries(prev => [...prev, ...toAdd]);
     e.target.value = '';
@@ -127,7 +126,7 @@ export function CreateEbookDialog({ schoolId, schoolName, onClose, onCreated }: 
                     onChange={e => updateEntry(i, 'examType', e.target.value)}
                     className="w-full text-sm px-3 py-2 rounded-md border border-border bg-background"
                   >
-                    {examTypes.map(t => <option key={t} value={t}>{t}</option>)}
+                    {allowedExamTypes.map(t => <option key={t} value={t}>{t}</option>)}
                   </select>
                   <Input
                     value={entry.author}
