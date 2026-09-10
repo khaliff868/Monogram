@@ -90,35 +90,35 @@ export function PwaInstallBanner() {
 
   return (
     <div className="fixed bottom-16 md:bottom-4 left-3 right-3 z-[60] animate-in slide-in-from-bottom-4 duration-500">
-      <div className="relative max-w-md mx-auto bg-white rounded-2xl border border-border p-4" style={{ boxShadow: '0 8px 30px rgba(0,0,0,0.12)' }}>
+      <div className="relative max-w-xs mx-auto bg-white rounded-2xl border border-border p-3" style={{ boxShadow: '0 8px 30px rgba(0,0,0,0.12)' }}>
         <button
           onClick={dismiss}
-          className="absolute top-3 right-3 p-1 rounded-full hover:bg-muted transition-colors"
+          className="absolute top-2 right-2 p-1 rounded-full hover:bg-muted transition-colors"
           aria-label="Dismiss"
         >
-          <X className="w-4 h-4 text-muted-foreground" />
+          <X className="w-3.5 h-3.5 text-muted-foreground" />
         </button>
 
-        <div className="flex items-start gap-3">
+        <div className="flex items-start gap-2.5">
           {/* App icon */}
-          <div className="w-12 h-12 rounded-xl bg-pattern-brown flex items-center justify-center shrink-0">
-            <span className="font-display font-bold text-xl" style={{ color: '#FFA800' }}>M</span>
+          <div className="w-9 h-9 rounded-lg bg-pattern-brown flex items-center justify-center shrink-0">
+            <span className="font-display font-bold text-base" style={{ color: '#FFA800' }}>M</span>
           </div>
 
-          <div className="min-w-0 flex-1">
-            <p className="font-display font-bold text-[#663f30] text-sm">Install MONOGRAM</p>
+          <div className="min-w-0 flex-1 pr-3">
+            <p className="font-display font-bold text-[#663f30] text-xs">Install MONOGRAM</p>
 
             {showAndroid && (
               <>
-                <p className="text-xs text-muted-foreground mt-0.5">Add to your home screen for quick access — works like a native app.</p>
+                <p className="text-[11px] leading-snug text-muted-foreground mt-0.5 break-words">Add to your home screen for quick access.</p>
                 <button
                   onClick={handleInstall}
-                  className="mt-2.5 flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors"
+                  className="mt-2 flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium text-white transition-colors"
                   style={{ backgroundColor: '#663f30' }}
                   onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#533226')}
                   onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#663f30')}
                 >
-                  <Download className="w-4 h-4" />
+                  <Download className="w-3.5 h-3.5" />
                   Install App
                 </button>
               </>
@@ -126,10 +126,10 @@ export function PwaInstallBanner() {
 
             {showIOS && (
               <>
-                <p className="text-xs text-muted-foreground mt-0.5">Install for quick access — it&apos;ll work like an app on your phone.</p>
-                <div className="mt-2.5 flex items-start gap-2 text-xs text-muted-foreground bg-muted/60 rounded-lg px-3 py-2">
-                  <Share className="w-4 h-4 shrink-0 mt-0.5 text-[#663f30]" />
-                  <span>Tap the <strong className="text-foreground">Share</strong> button in Safari, then tap <strong className="text-foreground">&quot;Add to Home Screen&quot;</strong>.</span>
+                <p className="text-[11px] leading-snug text-muted-foreground mt-0.5 break-words">Works like an app on your phone.</p>
+                <div className="mt-2 flex items-start gap-1.5 text-[11px] leading-snug text-muted-foreground bg-muted/60 rounded-lg px-2.5 py-1.5 break-words">
+                  <Share className="w-3.5 h-3.5 shrink-0 mt-0.5 text-[#663f30]" />
+                  <span>Tap <strong className="text-foreground">Share</strong>, then <strong className="text-foreground">&quot;Add to Home Screen&quot;</strong>.</span>
                 </div>
               </>
             )}
