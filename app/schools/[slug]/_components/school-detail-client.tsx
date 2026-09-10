@@ -85,10 +85,10 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
     setListingsLoading(false);
   }, [school.id]);
 
-  const fetchPapers = useCallback(async () => {
+  const fetchPapers = useCallback(async (examType: string) => {
     setPapersLoading(true);
     try {
-      const res = await fetch(`/api/past-papers?schoolId=${school.id}&status=approved`);
+      const res = await fetch(`/api/past-papers?schoolId=${school.id}&status=approved&examType=${examType}`);
       const data = await res.json();
       setPastPapers(data.papers || []);
     } catch { setPastPapers([]); }
@@ -108,8 +108,8 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
   useEffect(() => {
     if (['books', 'uniforms', 'shoes', 'other'].includes(activeTab)) {
       fetchListings(activeTab);
-    } else if (activeTab === 'papers') {
-      fetchPapers();
+    } else if (['sea', 'csec', 'cape'].includes(activeTab)) {
+      fetchPapers(activeTab.toUpperCase());
     } else if (activeTab === 'ebooks') {
       fetchEbooks();
     }
@@ -151,7 +151,7 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
   const handlePaperCreated = () => {
     setShowCreatePaper(false);
     toast.success('Past paper submitted for review!');
-    fetchPapers();
+    if (['sea', 'csec', 'cape'].includes(activeTab)) fetchPapers(activeTab.toUpperCase());
   };
 
   const handleEbookCreated = () => {
@@ -177,6 +177,22 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
       </div>
     );
   }
+
+  const renderPapersTab = (examType: string, label: string) => (
+    <div className="p-4">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="font-display font-semibold text-sm" style={{ color: '#663f30' }}>{label}</h3>
+        {session && (
+          <Button size="sm" onClick={() => setShowCreatePaper(true)} className="bg-[#663f30] hover:bg-[#533226] text-white text-xs">
+            <Plus className="w-3.5 h-3.5 mr-1" /> Add Paper
+          </Button>
+        )}
+      </div>
+      {papersLoading ? <LoadingState /> : pastPapers.length > 0 ? (
+        <PastPaperList papers={pastPapers} />
+      ) : <EmptyState label="past paper" icon={<FileText className="w-5 h-5" />} />}
+    </div>
+  );
 
   const EXAM_ORDER = ['SEA', 'CSEC', 'CAPE'];
   const renderListingTab = (category: string, label: string, icon: React.ReactNode, singular) => {
@@ -276,8 +292,14 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
                       <TabsTrigger value="ebooks" className="rounded-none bg-purple-50 data-[state=active]:bg-purple-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
                         <BookMarked className="w-3.5 h-3.5 mr-1" /> E-Books
                       </TabsTrigger>
-                      <TabsTrigger value="papers" className="rounded-none bg-amber-50 data-[state=active]:bg-amber-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
-                        <FileText className="w-3.5 h-3.5 mr-1" /> Past Papers
+                      <TabsTrigger value="sea" className="rounded-none bg-amber-50 data-[state=active]:bg-amber-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
+                        <FileText className="w-3.5 h-3.5 mr-1" /> SEA
+                      </TabsTrigger>
+                      <TabsTrigger value="csec" className="rounded-none bg-amber-50 data-[state=active]:bg-amber-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
+                        <FileText className="w-3.5 h-3.5 mr-1" /> CSEC
+                      </TabsTrigger>
+                      <TabsTrigger value="cape" className="rounded-none bg-amber-50 data-[state=active]:bg-amber-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
+                        <FileText className="w-3.5 h-3.5 mr-1" /> CAPE
                       </TabsTrigger>
                       <TabsTrigger value="uniforms" className="rounded-none bg-pink-50 data-[state=active]:bg-pink-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
                         <Shirt className="w-3.5 h-3.5 mr-1" /> Uniforms
@@ -294,21 +316,9 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
                     <TabsContent value="uniforms">{renderListingTab('UNIFORMS', 'Uniforms', <Shirt className="w-5 h-5" />)}</TabsContent>
                     <TabsContent value="shoes">{renderListingTab('SHOES', 'Shoes', <ShoppingBag className="w-5 h-5" />)}</TabsContent>
 
-                    <TabsContent value="papers">
-                      <div className="p-4">
-                        <div className="flex items-center justify-between mb-4">
-                          <h3 className="font-display font-semibold text-sm" style={{ color: '#663f30' }}>Past Papers</h3>
-                          {session && (
-                            <Button size="sm" onClick={() => setShowCreatePaper(true)} className="bg-[#663f30] hover:bg-[#533226] text-white text-xs">
-                              <Plus className="w-3.5 h-3.5 mr-1" /> Add Paper
-                            </Button>
-                          )}
-                        </div>
-                        {papersLoading ? <LoadingState /> : pastPapers.length > 0 ? (
-                          <PastPaperList papers={pastPapers} />
-                        ) : <EmptyState label="past paper" icon={<FileText className="w-5 h-5" />} />}
-                      </div>
-                    </TabsContent>
+                    <TabsContent value="sea">{renderPapersTab('SEA', 'SEA')}</TabsContent>
+                    <TabsContent value="csec">{renderPapersTab('CSEC', 'CSEC')}</TabsContent>
+                    <TabsContent value="cape">{renderPapersTab('CAPE', 'CAPE')}</TabsContent>
 
                     <TabsContent value="other">{renderListingTab('OTHER', 'Other', <Tag className="w-5 h-5" />, 'Other')}</TabsContent>
 
@@ -411,6 +421,7 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
         <CreatePastPaperDialog
           schoolId={school.id}
           schoolName={school.name}
+          defaultExamType={['sea', 'csec', 'cape'].includes(activeTab) ? activeTab.toUpperCase() : 'CSEC'}
           onClose={() => setShowCreatePaper(false)}
           onCreated={handlePaperCreated}
         />

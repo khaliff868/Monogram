@@ -7,7 +7,6 @@ import { X, FileText, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { uploadPastPaperFile } from '@/lib/supabase-client';
 
-const examTypes = ['CSEC', 'CAPE', 'SEA', 'Internal'];
 const subjects = [
   'Mathematics', 'English Language', 'English Literature', 'Physics', 'Chemistry',
   'Biology', 'Integrated Science', 'Social Studies', 'History', 'Geography',
@@ -19,6 +18,7 @@ const subjects = [
 interface Props {
   schoolId: string;
   schoolName: string;
+  defaultExamType: string;
   onClose: () => void;
   onCreated: () => void;
 }
@@ -26,14 +26,13 @@ interface Props {
 interface FileEntry {
   file: File;
   subject: string;
-  examType: string;
   year: string;
   paperNum: string;
 }
 
 const years = Array.from({ length: 30 }, (_, i) => 2026 - i);
 
-export function CreatePastPaperDialog({ schoolId, schoolName, onClose, onCreated }: Props) {
+export function CreatePastPaperDialog({ schoolId, schoolName, defaultExamType, onClose, onCreated }: Props) {
   const [loading, setLoading] = useState(false);
   const [entries, setEntries] = useState<FileEntry[]>([]);
 
@@ -48,7 +47,6 @@ export function CreatePastPaperDialog({ schoolId, schoolName, onClose, onCreated
     const toAdd = selected.slice(0, Math.max(0, remaining)).map(file => ({
       file,
       subject: '',
-      examType: 'CSEC',
       year: '2026',
       paperNum: '',
     }));
@@ -79,7 +77,7 @@ export function CreatePastPaperDialog({ schoolId, schoolName, onClose, onCreated
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               subject: entry.subject,
-              examType: entry.examType,
+              examType: defaultExamType,
               year: entry.year,
               paperNum: entry.paperNum || undefined,
               filePath,
@@ -106,16 +104,16 @@ export function CreatePastPaperDialog({ schoolId, schoolName, onClose, onCreated
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
       <div className="bg-card rounded-xl w-full max-w-md max-h-[90vh] overflow-y-auto" style={{ boxShadow: 'var(--shadow-lg)' }}>
         <div className="sticky top-0 bg-card flex items-center justify-between p-4 border-b border-border rounded-t-xl">
-          <h2 className="font-display font-bold text-lg" style={{ color: '#663f30' }}>Add Past Paper</h2>
+          <h2 className="font-display font-bold text-lg" style={{ color: '#663f30' }}>Add {defaultExamType} Paper</h2>
           <button onClick={onClose} className="p-1 hover:bg-muted rounded-md"><X className="w-5 h-5" /></button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-4 space-y-4">
-          <p className="text-xs text-muted-foreground">Submit past papers for <strong>{schoolName}</strong>. Papers go through admin review.</p>
+          <p className="text-xs text-muted-foreground">Submit {defaultExamType} past papers for <strong>{schoolName}</strong>. Papers go through admin review.</p>
           <p className="text-xs text-amber-600 bg-amber-50 rounded-md p-2">Please ensure you have permission to share this paper. Do not upload copyrighted material without authorization.</p>
 
           <div>
-            <label className="text-xs font-medium mb-1 block">Files * (up to 5, each with its own details)</label>
+            <label className="text-xs font-medium mb-1 block">Files * (up to 30, each with its own details)</label>
             <div className="space-y-3 mb-2">
               {entries.map((entry, i) => (
                 <div key={i} className="border border-border rounded-lg p-3 space-y-2">
@@ -136,22 +134,13 @@ export function CreatePastPaperDialog({ schoolId, schoolName, onClose, onCreated
                     <option value="">Select subject...</option>
                     {subjects.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
-                  <div className="grid grid-cols-2 gap-2">
-                    <select
-                      value={entry.examType}
-                      onChange={e => updateEntry(i, 'examType', e.target.value)}
-                      className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FFA800]/50"
-                    >
-                      {examTypes.map(t => <option key={t} value={t}>{t}</option>)}
-                    </select>
-                    <select
-                      value={entry.year}
-                      onChange={e => updateEntry(i, 'year', e.target.value)}
-                      className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FFA800]/50"
-                    >
-                      {years.map(y => <option key={y} value={y}>{y}</option>)}
-                    </select>
-                  </div>
+                  <select
+                    value={entry.year}
+                    onChange={e => updateEntry(i, 'year', e.target.value)}
+                    className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FFA800]/50"
+                  >
+                    {years.map(y => <option key={y} value={y}>{y}</option>)}
+                  </select>
                   <Input
                     value={entry.paperNum}
                     onChange={e => updateEntry(i, 'paperNum', e.target.value)}
@@ -161,7 +150,7 @@ export function CreatePastPaperDialog({ schoolId, schoolName, onClose, onCreated
                 </div>
               ))}
             </div>
-            {entries.length < 5 && (
+            {entries.length < 30 && (
               <label className="flex items-center justify-center gap-2 border border-dashed border-border rounded-md py-2.5 text-xs text-muted-foreground cursor-pointer hover:bg-muted transition-colors">
                 <FileText className="w-4 h-4" />
                 Select file(s) to upload
