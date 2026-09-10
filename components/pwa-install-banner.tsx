@@ -90,7 +90,7 @@ export function PwaInstallBanner() {
 
   return (
     <div className="fixed bottom-16 md:bottom-4 left-3 right-3 z-[60] animate-in slide-in-from-bottom-4 duration-500">
-      <div className="max-w-md mx-auto bg-white rounded-2xl border border-border p-4" style={{ boxShadow: '0 8px 30px rgba(0,0,0,0.12)' }}>
+      <div className="relative max-w-md mx-auto bg-white rounded-2xl border border-border p-4" style={{ boxShadow: '0 8px 30px rgba(0,0,0,0.12)' }}>
         <button
           onClick={dismiss}
           className="absolute top-3 right-3 p-1 rounded-full hover:bg-muted transition-colors"
