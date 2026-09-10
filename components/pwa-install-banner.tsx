@@ -9,15 +9,10 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 const DISMISS_KEY = 'monogram_pwa_dismissed';
-const DISMISS_DAYS = 14; // re-show after 14 days
 
 function isDismissed(): boolean {
   if (typeof window === 'undefined') return true;
-  const raw = localStorage.getItem(DISMISS_KEY);
-  if (!raw) return false;
-  const ts = parseInt(raw, 10);
-  if (isNaN(ts)) return false;
-  return Date.now() - ts < DISMISS_DAYS * 86400000;
+  return sessionStorage.getItem(DISMISS_KEY) === 'true';
 }
 
 function isStandalone(): boolean {
@@ -48,7 +43,7 @@ export function PwaInstallBanner() {
   const [visible, setVisible] = useState(false);
 
   const dismiss = useCallback(() => {
-    localStorage.setItem(DISMISS_KEY, Date.now().toString());
+    sessionStorage.setItem(DISMISS_KEY, 'true');
     setVisible(false);
     setShowAndroid(false);
     setShowIOS(false);
