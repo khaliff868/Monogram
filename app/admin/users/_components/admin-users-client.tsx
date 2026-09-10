@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { FadeIn } from '@/components/ui/animate';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Search, Shield, Ban, Trash2, ShieldCheck } from 'lucide-react';
+import { Search, Ban, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { SafeDate } from '@/components/safe-format';
@@ -22,9 +22,22 @@ interface UserData {
   lastLoginAt: string | null;
 }
 
-export function AdminUsersClient({ users }: { users: UserData[] }) {
+const roleColors: Record<string, string> = {
+  admin: 'bg-purple-100 text-purple-800',
+  moderator: 'bg-blue-100 text-blue-800',
+  user: 'bg-muted text-muted-foreground',
+};
+
+const roleActionMap: Record<string, string> = {
+  user: 'demote',
+  moderator: 'promote_moderator',
+  admin: 'promote',
+};
+
+export function AdminUsersClient({ users, viewerRole }: { users: UserData[]; viewerRole: string }) {
   const router = useRouter();
   const [search, setSearch] = useState('');
+  const isViewerAdmin = viewerRole === 'admin';
 
   const filtered = (users ?? []).filter((u: UserData) =>
     u?.username?.toLowerCase?.()?.includes?.(search?.toLowerCase?.() ?? '') ||
@@ -42,7 +55,8 @@ export function AdminUsersClient({ users }: { users: UserData[] }) {
       toast.success('Updated');
       router.refresh();
     } else {
-      toast.error('Failed');
+      const data = await res.json().catch(() => ({}));
+      toast.error(data.error || 'Failed');
     }
   };
 
@@ -79,22 +93,33 @@ export function AdminUsersClient({ users }: { users: UserData[] }) {
                           <TableCell className="text-sm font-medium">{u.username}</TableCell>
                           <TableCell className="text-sm hidden md:table-cell"><span suppressHydrationWarning>{u.email}</span></TableCell>
                           <TableCell className="hidden sm:table-cell">
-                            <span className={`text-xs px-2 py-0.5 rounded-full ${u.role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-muted text-muted-foreground'}`}>
-                              {u.role}
-                            </span>
+                            {isViewerAdmin ? (
+                              <select
+                                value={u.role}
+                                onChange={e => handleAction(u.id, roleActionMap[e.target.value])}
+                                className={`text-xs px-2 py-0.5 rounded-full border-0 ${roleColors[u.role] || roleColors.user}`}
+                              >
+                                <option value="user">user</option>
+                                <option value="moderator">moderator</option>
+                                <option value="admin">admin</option>
+                              </select>
+                            ) : (
+                              <span className={`text-xs px-2 py-0.5 rounded-full ${roleColors[u.role] || roleColors.user}`}>
+                                {u.role}
+                              </span>
+                            )}
                           </TableCell>
                           <TableCell className="text-xs text-muted-foreground hidden md:table-cell"><SafeDate date={u.createdAt} options={{ dateStyle: 'medium' }} /></TableCell>
                           <TableCell className="text-right">
                             <div className="flex items-center justify-end gap-1">
-                              <Button variant="ghost" size="icon-sm" title={u.role === 'admin' ? 'Demote to user' : 'Promote to admin'} onClick={() => handleAction(u.id, u.role === 'admin' ? 'demote' : 'promote')}>
-                                {u.role === 'admin' ? <ShieldCheck className="w-4 h-4 text-purple-600" /> : <Shield className="w-4 h-4" />}
-                              </Button>
                               <Button variant="ghost" size="icon-sm" title={u.suspended ? 'Unsuspend' : 'Suspend'} onClick={() => handleAction(u.id, u.suspended ? 'unsuspend' : 'suspend')}>
                                 <Ban className={`w-4 h-4 ${u.suspended ? 'text-orange-600' : ''}`} />
                               </Button>
-                              <Button variant="ghost" size="icon-sm" onClick={() => handleAction(u.id, 'delete')} className="text-destructive">
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
+                              {isViewerAdmin && (
+                                <Button variant="ghost" size="icon-sm" onClick={() => handleAction(u.id, 'delete')} className="text-destructive">
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              )}
                             </div>
                           </TableCell>
                         </TableRow>

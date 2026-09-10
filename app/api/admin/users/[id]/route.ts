@@ -2,18 +2,26 @@ export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
+import { isStaff } from '@/lib/roles';
 
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
   const user = session?.user as any;
-  if (!user || user.role !== 'admin') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  if (!user || !isStaff(user.role)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   const { id } = await params;
   try {
     const { action } = await req.json();
     let data: any = {};
     switch (action) {
-      case 'promote': data = { role: 'admin' }; break;
-      case 'demote': data = { role: 'user' }; break;
+      case 'promote':
+        if (user.role !== 'admin') return NextResponse.json({ error: 'Only admins can change user roles' }, { status: 403 });
+        data = { role: 'admin' }; break;
+      case 'promote_moderator':
+        if (user.role !== 'admin') return NextResponse.json({ error: 'Only admins can change user roles' }, { status: 403 });
+        data = { role: 'moderator' }; break;
+      case 'demote':
+        if (user.role !== 'admin') return NextResponse.json({ error: 'Only admins can change user roles' }, { status: 403 });
+        data = { role: 'user' }; break;
       case 'suspend': data = { suspended: true }; break;
       case 'unsuspend': data = { suspended: false }; break;
       default: return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
@@ -28,6 +36,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
   const user = session?.user as any;
+  // Only full admins can delete accounts — moderators are explicitly excluded from this action.
   if (!user || user.role !== 'admin') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   const { id } = await params;
   try {

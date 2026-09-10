@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/auth';
+import { isStaff } from '@/lib/roles';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,7 +26,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   if (!listing) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
   const user = session.user as any;
-  if (listing.userId !== session.user.id && user.role !== 'admin') {
+  if (listing.userId !== session.user.id && !isStaff(user.role)) {
     return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
   }
 

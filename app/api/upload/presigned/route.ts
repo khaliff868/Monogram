@@ -1,13 +1,14 @@
 export const dynamic = 'force-dynamic';
 import { NextResponse } from 'next/server';
 import { auth } from '@/auth';
+import { isStaff } from '@/lib/roles';
 import { generatePresignedUploadUrl } from '@/lib/s3';
 
 export async function POST(req: Request) {
   const session = await auth();
   if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   const user = session.user as any;
-  if (user.role !== 'admin') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  if (!isStaff(user.role)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
   try {
     const { fileName, contentType, isPublic } = await req.json();
