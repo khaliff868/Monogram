@@ -292,15 +292,20 @@ export function SchoolDetailClient({ school }: { school: SchoolData }) {
                       <TabsTrigger value="ebooks" className="rounded-none bg-purple-50 data-[state=active]:bg-purple-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
                         <BookMarked className="w-3.5 h-3.5 mr-1" /> E-Books
                       </TabsTrigger>
-                      <TabsTrigger value="sea" className="rounded-none bg-amber-50 data-[state=active]:bg-amber-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
-                        <FileText className="w-3.5 h-3.5 mr-1" /> SEA
-                      </TabsTrigger>
-                      <TabsTrigger value="csec" className="rounded-none bg-amber-50 data-[state=active]:bg-amber-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
-                        <FileText className="w-3.5 h-3.5 mr-1" /> CSEC
-                      </TabsTrigger>
-                      <TabsTrigger value="cape" className="rounded-none bg-amber-50 data-[state=active]:bg-amber-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
-                        <FileText className="w-3.5 h-3.5 mr-1" /> CAPE
-                      </TabsTrigger>
+                      <div className="flex flex-col items-start bg-amber-50/60 px-2 pt-1.5">
+                        <span className="text-[10px] font-medium text-amber-800/70 uppercase tracking-wide px-1 mb-0.5">Past Papers</span>
+                        <div className="flex">
+                          <TabsTrigger value="sea" className="rounded-none bg-amber-50 data-[state=active]:bg-amber-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-2.5 text-xs">
+                            <FileText className="w-3.5 h-3.5 mr-1" /> SEA
+                          </TabsTrigger>
+                          <TabsTrigger value="csec" className="rounded-none bg-amber-50 data-[state=active]:bg-amber-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-2.5 text-xs">
+                            <FileText className="w-3.5 h-3.5 mr-1" /> CSEC
+                          </TabsTrigger>
+                          <TabsTrigger value="cape" className="rounded-none bg-amber-50 data-[state=active]:bg-amber-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-2.5 text-xs">
+                            <FileText className="w-3.5 h-3.5 mr-1" /> CAPE
+                          </TabsTrigger>
+                        </div>
+                      </div>
                       <TabsTrigger value="uniforms" className="rounded-none bg-pink-50 data-[state=active]:bg-pink-100 data-[state=active]:border-b-2 data-[state=active]:border-[#FFA800] px-4 py-3 text-xs">
                         <Shirt className="w-3.5 h-3.5 mr-1" /> Uniforms
                       </TabsTrigger>
