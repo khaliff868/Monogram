@@ -18,22 +18,43 @@ interface Paper {
   user?: { id: string; username: string };
 }
 
+interface Row {
+  year: number;
+  paperNum: string | null;
+  question?: Paper;
+  answer?: Paper;
+}
+
 export function PastPaperList({ papers }: { papers: Paper[] }) {
-  // Group by subject, then exam type, then year+paperNum (pairing question/answer)
-  const grouped: Record<string, Record<string, Record<string, { year: number; paperNum: string | null; question?: Paper; answer?: Paper }>>> = {};
+  // Group by subject, then exam type, then year+paperNum.
+  // Question and answer papers are collected into separate lists per group, then
+  // paired by index so duplicate uploads (e.g. two question papers, no answer)
+  // each still get their own row instead of overwriting one another.
+  const grouped: Record<string, Record<string, Record<string, { year: number; paperNum: string | null; questions: Paper[]; answers: Paper[] }>>> = {};
   for (const p of papers) {
     const pairKey = `${p.year}__${p.paperNum ?? ''}`;
     if (!grouped[p.subject]) grouped[p.subject] = {};
     if (!grouped[p.subject][p.examType]) grouped[p.subject][p.examType] = {};
     if (!grouped[p.subject][p.examType][pairKey]) {
-      grouped[p.subject][p.examType][pairKey] = { year: p.year, paperNum: p.paperNum };
+      grouped[p.subject][p.examType][pairKey] = { year: p.year, paperNum: p.paperNum, questions: [], answers: [] };
     }
     if (p.paperType === 'answer') {
-      grouped[p.subject][p.examType][pairKey].answer = p;
+      grouped[p.subject][p.examType][pairKey].answers.push(p);
     } else {
-      grouped[p.subject][p.examType][pairKey].question = p;
+      grouped[p.subject][p.examType][pairKey].questions.push(p);
     }
   }
+
+  const buildRows = (group: Record<string, { year: number; paperNum: string | null; questions: Paper[]; answers: Paper[] }>): Row[] => {
+    const rows: Row[] = [];
+    for (const { year, paperNum, questions, answers } of Object.values(group)) {
+      const count = Math.max(questions.length, answers.length, 1);
+      for (let i = 0; i < count; i++) {
+        rows.push({ year, paperNum, question: questions[i], answer: answers[i] });
+      }
+    }
+    return rows.sort((a, b) => b.year - a.year);
+  };
 
   const [expandedSubjects, setExpandedSubjects] = useState<Set<string>>(new Set(Object.keys(grouped).slice(0, 2)));
 
@@ -104,26 +125,26 @@ export function PastPaperList({ papers }: { papers: Paper[] }) {
             <span className="font-medium text-sm" style={{ color: '#663f30' }}>{subject}</span>
             <div className="flex items-center gap-2">
               <span className="text-xs text-muted-foreground">
-                {Object.values(exams).reduce((sum, pairs) => sum + Object.keys(pairs).length, 0)} papers
+                {Object.values(exams).reduce((sum, group) => sum + buildRows(group).length, 0)} papers
               </span>
               {expandedSubjects.has(subject) ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
             </div>
           </button>
           {expandedSubjects.has(subject) && (
             <div className="p-3 space-y-3">
-              {Object.entries(exams).sort(([a], [b]) => a.localeCompare(b)).map(([examType, pairs]) => (
+              {Object.entries(exams).sort(([a], [b]) => a.localeCompare(b)).map(([examType, group]) => (
                 <div key={examType}>
                   <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">{examType}</p>
                   <div className="space-y-2">
-                    {Object.values(pairs).sort((a, b) => b.year - a.year).map(pair => (
-                      <div key={`${pair.year}__${pair.paperNum ?? ''}`} className="rounded-md border border-border p-2">
+                    {buildRows(group).map((row, i) => (
+                      <div key={`${row.year}__${row.paperNum ?? ''}__${i}`} className="rounded-md border border-border p-2">
                         <div className="flex items-center gap-2 mb-2 px-1">
                           <FileText className="w-3.5 h-3.5 text-[#FFA800]" />
-                          <span className="text-sm font-medium">{pair.year}{pair.paperNum ? ` — ${pair.paperNum}` : ''}</span>
+                          <span className="text-sm font-medium">{row.year}{row.paperNum ? ` — ${row.paperNum}` : ''}</span>
                         </div>
                         <div className="flex gap-2">
-                          {renderSide(pair.question, 'Question Paper', <FileQuestion className="w-3.5 h-3.5" />)}
-                          {renderSide(pair.answer, 'Answer Paper', <FileCheck className="w-3.5 h-3.5" />)}
+                          {renderSide(row.question, 'Question Paper', <FileQuestion className="w-3.5 h-3.5" />)}
+                          {renderSide(row.answer, 'Answer Paper', <FileCheck className="w-3.5 h-3.5" />)}
                         </div>
                       </div>
                     ))}
