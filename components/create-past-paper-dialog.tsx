@@ -26,6 +26,7 @@ interface FileEntry {
   subject: string;
   year: string;
   paperNum: string;
+  paperType: string;
 }
 
 const years = Array.from({ length: 30 }, (_, i) => 2026 - i);
@@ -47,6 +48,7 @@ export function CreatePastPaperDialog({ defaultExamType, onClose, onCreated }: P
       subject: '',
       year: '2026',
       paperNum: '',
+      paperType: 'question',
     }));
     setEntries(prev => [...prev, ...toAdd]);
     e.target.value = '';
@@ -78,6 +80,7 @@ export function CreatePastPaperDialog({ defaultExamType, onClose, onCreated }: P
               examType: defaultExamType,
               year: entry.year,
               paperNum: entry.paperNum || undefined,
+              paperType: entry.paperType,
               filePath,
             }),
           });
@@ -131,13 +134,23 @@ export function CreatePastPaperDialog({ defaultExamType, onClose, onCreated }: P
                     <option value="">Select subject...</option>
                     {subjects.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
-                  <select
-                    value={entry.year}
-                    onChange={e => updateEntry(i, 'year', e.target.value)}
-                    className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FFA800]/50"
-                  >
-                    {years.map(y => <option key={y} value={y}>{y}</option>)}
-                  </select>
+                  <div className="grid grid-cols-2 gap-2">
+                    <select
+                      value={entry.year}
+                      onChange={e => updateEntry(i, 'year', e.target.value)}
+                      className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FFA800]/50"
+                    >
+                      {years.map(y => <option key={y} value={y}>{y}</option>)}
+                    </select>
+                    <select
+                      value={entry.paperType}
+                      onChange={e => updateEntry(i, 'paperType', e.target.value)}
+                      className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FFA800]/50"
+                    >
+                      <option value="question">Question Paper</option>
+                      <option value="answer">Answer Paper</option>
+                    </select>
+                  </div>
                   <Input
                     value={entry.paperNum}
                     onChange={e => updateEntry(i, 'paperNum', e.target.value)}

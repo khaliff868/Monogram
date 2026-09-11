@@ -103,6 +103,7 @@ export function AdminPastPapersClient() {
                             <FileText className="w-4 h-4" style={{ color: '#FFA800' }} />
                             <h3 className="font-semibold text-sm">{paper.subject} — {paper.examType} {paper.year}</h3>
                             <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${statusColors[paper.status] || ''}`}>{paper.status}</span>
+                            <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${paper.paperType === 'answer' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>{paper.paperType === 'answer' ? 'Answer Paper' : 'Question Paper'}</span>
                           </div>
                           {paper.paperNum && <p className="text-xs text-muted-foreground mb-1">{paper.paperNum}</p>}
                           <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">

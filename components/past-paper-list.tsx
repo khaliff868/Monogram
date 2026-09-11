@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { FileText, Download, ChevronDown, ChevronRight } from 'lucide-react';
+import { FileText, Download, ChevronDown, ChevronRight, FileQuestion, FileCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { MessageUserButton } from '@/components/message-user-button';
@@ -12,19 +12,27 @@ interface Paper {
   examType: string;
   year: number;
   paperNum: string | null;
+  paperType: string;
   filePath: string | null;
   downloads: number;
   user?: { id: string; username: string };
 }
 
 export function PastPaperList({ papers }: { papers: Paper[] }) {
-  // Group by subject then by exam type then by year
-  const grouped: Record<string, Record<string, Record<number, Paper[]>>> = {};
+  // Group by subject, then exam type, then year+paperNum (pairing question/answer)
+  const grouped: Record<string, Record<string, Record<string, { year: number; paperNum: string | null; question?: Paper; answer?: Paper }>>> = {};
   for (const p of papers) {
+    const pairKey = `${p.year}__${p.paperNum ?? ''}`;
     if (!grouped[p.subject]) grouped[p.subject] = {};
     if (!grouped[p.subject][p.examType]) grouped[p.subject][p.examType] = {};
-    if (!grouped[p.subject][p.examType][p.year]) grouped[p.subject][p.examType][p.year] = [];
-    grouped[p.subject][p.examType][p.year].push(p);
+    if (!grouped[p.subject][p.examType][pairKey]) {
+      grouped[p.subject][p.examType][pairKey] = { year: p.year, paperNum: p.paperNum };
+    }
+    if (p.paperType === 'answer') {
+      grouped[p.subject][p.examType][pairKey].answer = p;
+    } else {
+      grouped[p.subject][p.examType][pairKey].question = p;
+    }
   }
 
   const [expandedSubjects, setExpandedSubjects] = useState<Set<string>>(new Set(Object.keys(grouped).slice(0, 2)));
@@ -52,6 +60,39 @@ export function PastPaperList({ papers }: { papers: Paper[] }) {
     }
   };
 
+  const renderSide = (paper: Paper | undefined, label: string, icon: React.ReactNode) => {
+    if (!paper) {
+      return (
+        <div className="flex-1 flex flex-col items-center justify-center gap-1 py-3 rounded-md border border-dashed border-border text-muted-foreground">
+          {icon}
+          <span className="text-[11px]">{label} not available</span>
+        </div>
+      );
+    }
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center gap-1.5 py-3 rounded-md border border-border bg-muted/20">
+        <div className="flex items-center gap-1 text-xs font-medium" style={{ color: '#663f30' }}>
+          {icon} {label}
+        </div>
+        <div className="flex items-center gap-1">
+          {paper.user?.id && (
+            <MessageUserButton
+              recipientId={paper.user.id}
+              label=""
+              className="h-6 w-6 flex items-center justify-center rounded-md hover:bg-muted text-muted-foreground"
+            />
+          )}
+          {paper.filePath && (
+            <Button size="sm" variant="ghost" className="h-6 text-[11px] px-2" onClick={() => handleDownload(paper.id)}>
+              <Download className="w-3 h-3 mr-1" /> Download
+            </Button>
+          )}
+        </div>
+        {paper.downloads > 0 && <span className="text-[10px] text-muted-foreground">{paper.downloads} downloads</span>}
+      </div>
+    );
+  };
+
   return (
     <div className="space-y-2">
       {Object.entries(grouped).sort(([a], [b]) => a.localeCompare(b)).map(([subject, exams]) => (
@@ -63,44 +104,29 @@ export function PastPaperList({ papers }: { papers: Paper[] }) {
             <span className="font-medium text-sm" style={{ color: '#663f30' }}>{subject}</span>
             <div className="flex items-center gap-2">
               <span className="text-xs text-muted-foreground">
-                {Object.values(exams).reduce((sum, years) => sum + Object.values(years).reduce((s, ps) => s + ps.length, 0), 0)} papers
+                {Object.values(exams).reduce((sum, pairs) => sum + Object.keys(pairs).length, 0)} papers
               </span>
               {expandedSubjects.has(subject) ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
             </div>
           </button>
           {expandedSubjects.has(subject) && (
             <div className="p-3 space-y-3">
-              {Object.entries(exams).sort(([a], [b]) => a.localeCompare(b)).map(([examType, years]) => (
+              {Object.entries(exams).sort(([a], [b]) => a.localeCompare(b)).map(([examType, pairs]) => (
                 <div key={examType}>
                   <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">{examType}</p>
-                  <div className="space-y-1">
-                    {Object.entries(years).sort(([a], [b]) => Number(b) - Number(a)).map(([year, yearPapers]) =>
-                      yearPapers.map(paper => (
-                        <div key={paper.id} className="flex items-center justify-between py-2 px-3 rounded-md hover:bg-muted/30 group">
-                          <div className="flex items-center gap-2">
-                            <FileText className="w-4 h-4 text-[#FFA800]" />
-                            <span className="text-sm">{year}{paper.paperNum ? ` — ${paper.paperNum}` : ''}</span>
-                            {paper.downloads > 0 && (
-                              <span className="text-[10px] text-muted-foreground">{paper.downloads} downloads</span>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                            {paper.user?.id && (
-                              <MessageUserButton
-                                recipientId={paper.user.id}
-                                label=""
-                                className="h-7 w-7 flex items-center justify-center rounded-md hover:bg-muted text-muted-foreground"
-                              />
-                            )}
-                            {paper.filePath && (
-                              <Button size="sm" variant="ghost" className="h-7 text-xs" onClick={() => handleDownload(paper.id)}>
-                                <Download className="w-3.5 h-3.5 mr-1" /> Download
-                              </Button>
-                            )}
-                          </div>
+                  <div className="space-y-2">
+                    {Object.values(pairs).sort((a, b) => b.year - a.year).map(pair => (
+                      <div key={`${pair.year}__${pair.paperNum ?? ''}`} className="rounded-md border border-border p-2">
+                        <div className="flex items-center gap-2 mb-2 px-1">
+                          <FileText className="w-3.5 h-3.5 text-[#FFA800]" />
+                          <span className="text-sm font-medium">{pair.year}{pair.paperNum ? ` — ${pair.paperNum}` : ''}</span>
                         </div>
-                      ))
-                    )}
+                        <div className="flex gap-2">
+                          {renderSide(pair.question, 'Question Paper', <FileQuestion className="w-3.5 h-3.5" />)}
+                          {renderSide(pair.answer, 'Answer Paper', <FileCheck className="w-3.5 h-3.5" />)}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               ))}

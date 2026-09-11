@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
   if (!isStaff(user.role)) return NextResponse.json({ error: 'Only admins and moderators can add past papers' }, { status: 403 });
 
   const body = await req.json();
-  const { subject, examType, year, paperNum, filePath, isPublicFile } = body;
+  const { subject, examType, year, paperNum, paperType, filePath, isPublicFile } = body;
 
   if (!subject || !examType || !year) {
     return NextResponse.json({ error: 'Subject, exam type, and year are required' }, { status: 400 });
@@ -46,6 +46,7 @@ export async function POST(req: NextRequest) {
       examType,
       year: parseInt(year),
       paperNum: paperNum || null,
+      paperType: paperType === 'answer' ? 'answer' : 'question',
       filePath: filePath || null,
       isPublicFile: isPublicFile ?? true,
       userId: session.user.id,
@@ -56,7 +57,7 @@ export async function POST(req: NextRequest) {
   await notifyAdmins({
     type: 'new_past_paper',
     title: 'New past paper pending approval',
-    message: `${subject} (${examType}, ${year}) submitted to the shared library`,
+    message: `${subject} (${examType}, ${year}) ${paperType === 'answer' ? 'answer key' : 'question paper'} submitted to the shared library`,
     link: '/admin/past-papers',
   });
 

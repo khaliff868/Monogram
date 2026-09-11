@@ -205,6 +205,7 @@ model PastPaper {
   examType  String   // CSEC | CAPE | SEA | Internal
   year      Int
   paperNum  String?  // Paper 1, Paper 2, etc.
+  paperType String   @default("question") // question | answer
   filePath  String?  // cloud_storage_path for uploaded file
   isPublicFile Boolean @default(true)
   userId    String?  // who uploaded
