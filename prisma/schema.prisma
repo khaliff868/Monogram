@@ -204,6 +204,7 @@ model PastPaper {
   subject   String
   examType  String   // CSEC | CAPE | SEA | Internal
   year      Int
+  month     String?  // January | June | etc. — exam sitting
   paperNum  String?  // Paper 1, Paper 2, etc.
   paperType String   @default("question") // question | answer
   filePath  String?  // cloud_storage_path for uploaded file

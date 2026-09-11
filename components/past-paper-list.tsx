@@ -11,6 +11,7 @@ interface Paper {
   subject: string;
   examType: string;
   year: number;
+  month: string | null;
   paperNum: string | null;
   paperType: string;
   filePath: string | null;
@@ -20,23 +21,26 @@ interface Paper {
 
 interface Row {
   year: number;
+  month: string | null;
   paperNum: string | null;
   question?: Paper;
   answer?: Paper;
 }
 
+const MONTH_ORDER: Record<string, number> = { June: 2, January: 1 };
+
 export function PastPaperList({ papers }: { papers: Paper[] }) {
-  // Group by subject, then exam type, then year+paperNum.
+  // Group by subject, then exam type, then year+month+paperNum.
   // Question and answer papers are collected into separate lists per group, then
   // paired by index so duplicate uploads (e.g. two question papers, no answer)
   // each still get their own row instead of overwriting one another.
-  const grouped: Record<string, Record<string, Record<string, { year: number; paperNum: string | null; questions: Paper[]; answers: Paper[] }>>> = {};
+  const grouped: Record<string, Record<string, Record<string, { year: number; month: string | null; paperNum: string | null; questions: Paper[]; answers: Paper[] }>>> = {};
   for (const p of papers) {
-    const pairKey = `${p.year}__${p.paperNum ?? ''}`;
+    const pairKey = `${p.year}__${p.month ?? ''}__${p.paperNum ?? ''}`;
     if (!grouped[p.subject]) grouped[p.subject] = {};
     if (!grouped[p.subject][p.examType]) grouped[p.subject][p.examType] = {};
     if (!grouped[p.subject][p.examType][pairKey]) {
-      grouped[p.subject][p.examType][pairKey] = { year: p.year, paperNum: p.paperNum, questions: [], answers: [] };
+      grouped[p.subject][p.examType][pairKey] = { year: p.year, month: p.month, paperNum: p.paperNum, questions: [], answers: [] };
     }
     if (p.paperType === 'answer') {
       grouped[p.subject][p.examType][pairKey].answers.push(p);
@@ -45,15 +49,18 @@ export function PastPaperList({ papers }: { papers: Paper[] }) {
     }
   }
 
-  const buildRows = (group: Record<string, { year: number; paperNum: string | null; questions: Paper[]; answers: Paper[] }>): Row[] => {
+  const buildRows = (group: Record<string, { year: number; month: string | null; paperNum: string | null; questions: Paper[]; answers: Paper[] }>): Row[] => {
     const rows: Row[] = [];
-    for (const { year, paperNum, questions, answers } of Object.values(group)) {
+    for (const { year, month, paperNum, questions, answers } of Object.values(group)) {
       const count = Math.max(questions.length, answers.length, 1);
       for (let i = 0; i < count; i++) {
-        rows.push({ year, paperNum, question: questions[i], answer: answers[i] });
+        rows.push({ year, month, paperNum, question: questions[i], answer: answers[i] });
       }
     }
-    return rows.sort((a, b) => b.year - a.year);
+    return rows.sort((a, b) => {
+      if (b.year !== a.year) return b.year - a.year;
+      return (MONTH_ORDER[b.month ?? ''] ?? 0) - (MONTH_ORDER[a.month ?? ''] ?? 0);
+    });
   };
 
   const [expandedSubjects, setExpandedSubjects] = useState<Set<string>>(new Set(Object.keys(grouped).slice(0, 2)));
@@ -137,10 +144,10 @@ export function PastPaperList({ papers }: { papers: Paper[] }) {
                   <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">{examType}</p>
                   <div className="space-y-2">
                     {buildRows(group).map((row, i) => (
-                      <div key={`${row.year}__${row.paperNum ?? ''}__${i}`} className="rounded-md border border-border p-2">
+                      <div key={`${row.year}__${row.month ?? ''}__${row.paperNum ?? ''}__${i}`} className="rounded-md border border-border p-2">
                         <div className="flex items-center gap-2 mb-2 px-1">
                           <FileText className="w-3.5 h-3.5 text-[#FFA800]" />
-                          <span className="text-sm font-medium">{row.year}{row.paperNum ? ` — ${row.paperNum}` : ''}</span>
+                          <span className="text-sm font-medium">{row.year}{row.month ? ` - ${row.month}` : ''}{row.paperNum ? ` — ${row.paperNum}` : ''}</span>
                         </div>
                         <div className="flex gap-2">
                           {renderSide(row.question, 'Question Paper', <FileQuestion className="w-3.5 h-3.5" />)}

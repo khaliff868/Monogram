@@ -15,6 +15,8 @@ const subjects = [
   'Principles of Business', 'Technical Drawing', 'Food & Nutrition', 'Other',
 ];
 
+const months = ['January', 'June'];
+
 interface Props {
   defaultExamType: string;
   onClose: () => void;
@@ -25,6 +27,7 @@ interface FileEntry {
   file: File;
   subject: string;
   year: string;
+  month: string;
   paperNum: string;
   paperType: string;
 }
@@ -47,6 +50,7 @@ export function CreatePastPaperDialog({ defaultExamType, onClose, onCreated }: P
       file,
       subject: '',
       year: '2026',
+      month: 'June',
       paperNum: '',
       paperType: 'question',
     }));
@@ -79,6 +83,7 @@ export function CreatePastPaperDialog({ defaultExamType, onClose, onCreated }: P
               subject: entry.subject,
               examType: defaultExamType,
               year: entry.year,
+              month: entry.month || undefined,
               paperNum: entry.paperNum || undefined,
               paperType: entry.paperType,
               filePath,
@@ -134,7 +139,7 @@ export function CreatePastPaperDialog({ defaultExamType, onClose, onCreated }: P
                     <option value="">Select subject...</option>
                     {subjects.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-3 gap-2">
                     <select
                       value={entry.year}
                       onChange={e => updateEntry(i, 'year', e.target.value)}
@@ -143,12 +148,19 @@ export function CreatePastPaperDialog({ defaultExamType, onClose, onCreated }: P
                       {years.map(y => <option key={y} value={y}>{y}</option>)}
                     </select>
                     <select
+                      value={entry.month}
+                      onChange={e => updateEntry(i, 'month', e.target.value)}
+                      className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FFA800]/50"
+                    >
+                      {months.map(m => <option key={m} value={m}>{m}</option>)}
+                    </select>
+                    <select
                       value={entry.paperType}
                       onChange={e => updateEntry(i, 'paperType', e.target.value)}
                       className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FFA800]/50"
                     >
-                      <option value="question">Question Paper</option>
-                      <option value="answer">Answer Paper</option>
+                      <option value="question">Question</option>
+                      <option value="answer">Answer</option>
                     </select>
                   </div>
                   <Input

@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
   if (!isStaff(user.role)) return NextResponse.json({ error: 'Only admins and moderators can add past papers' }, { status: 403 });
 
   const body = await req.json();
-  const { subject, examType, year, paperNum, paperType, filePath, isPublicFile } = body;
+  const { subject, examType, year, month, paperNum, paperType, filePath, isPublicFile } = body;
 
   if (!subject || !examType || !year) {
     return NextResponse.json({ error: 'Subject, exam type, and year are required' }, { status: 400 });
@@ -45,6 +45,7 @@ export async function POST(req: NextRequest) {
       subject,
       examType,
       year: parseInt(year),
+      month: month || null,
       paperNum: paperNum || null,
       paperType: paperType === 'answer' ? 'answer' : 'question',
       filePath: filePath || null,
