@@ -9,10 +9,18 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 const DISMISS_KEY = 'monogram_pwa_dismissed';
+const INSTALLED_KEY = 'monogram_pwa_installed';
+const COOLDOWN_MS = 3 * 24 * 60 * 60 * 1000; // 3 days
 
 function isDismissed(): boolean {
   if (typeof window === 'undefined') return true;
-  return sessionStorage.getItem(DISMISS_KEY) === 'true';
+  const dismissed = localStorage.getItem(DISMISS_KEY);
+  return !!dismissed && Date.now() - parseInt(dismissed) < COOLDOWN_MS;
+}
+
+function isInstalled(): boolean {
+  if (typeof window === 'undefined') return true;
+  return localStorage.getItem(INSTALLED_KEY) === 'true';
 }
 
 function isStandalone(): boolean {
@@ -43,14 +51,14 @@ export function PwaInstallBanner() {
   const [visible, setVisible] = useState(false);
 
   const dismiss = useCallback(() => {
-    sessionStorage.setItem(DISMISS_KEY, 'true');
+    localStorage.setItem(DISMISS_KEY, Date.now().toString());
     setVisible(false);
     setShowAndroid(false);
     setShowIOS(false);
   }, []);
 
   useEffect(() => {
-    if (isStandalone() || isDismissed()) return;
+    if (isStandalone() || isInstalled() || isDismissed()) return;
 
     // Android / desktop Chrome
     const handler = (e: Event) => {
@@ -59,7 +67,12 @@ export function PwaInstallBanner() {
       setShowAndroid(true);
       setVisible(true);
     };
+    const installedHandler = () => {
+      localStorage.setItem(INSTALLED_KEY, 'true');
+      setVisible(false);
+    };
     window.addEventListener('beforeinstallprompt', handler);
+    window.addEventListener('appinstalled', installedHandler);
 
     // iOS Safari — show after a short delay so the page loads first
     if (isIOSSafari()) {
@@ -69,20 +82,27 @@ export function PwaInstallBanner() {
       }, 3000);
       return () => {
         window.removeEventListener('beforeinstallprompt', handler);
+        window.removeEventListener('appinstalled', installedHandler);
         clearTimeout(t);
       };
     }
 
-    return () => window.removeEventListener('beforeinstallprompt', handler);
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handler);
+      window.removeEventListener('appinstalled', installedHandler);
+    };
   }, []);
 
   const handleInstall = async () => {
     if (!deferredPrompt) return;
     await deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      localStorage.setItem(INSTALLED_KEY, 'true');
+    }
     // Whether accepted or declined, the native prompt is now spent and
     // deferredPrompt is being cleared below - hide the banner either way
-    // so a decline does not leave a dead "Install App" button on screen.
+    // so a decline doesn't leave a dead "Install App" button on screen.
     dismiss();
     setDeferredPrompt(null);
   };
