@@ -57,7 +57,26 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.id = user.id;
         token.role = user.role;
         token.username = user.name;
+        token.roleCheckedAt = Date.now();
+        return token;
       }
+
+      // Re-check the role periodically so an admin promoting/demoting a
+      // user takes effect without waiting for the user to log out and
+      // back in. The JWT is otherwise only refreshed at login.
+      const ROLE_REFRESH_MS = 5 * 60 * 1000; // 5 minutes
+      const lastChecked = (token.roleCheckedAt as number) || 0;
+      if (token.id && Date.now() - lastChecked > ROLE_REFRESH_MS) {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: { role: true, suspended: true },
+        });
+        if (dbUser) {
+          token.role = dbUser.role;
+        }
+        token.roleCheckedAt = Date.now();
+      }
+
       return token;
     },
     async session({ session, token }: any) {
