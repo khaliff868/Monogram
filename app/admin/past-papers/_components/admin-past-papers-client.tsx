@@ -57,10 +57,18 @@ export function AdminPastPapersClient() {
     } catch { toast.error('Failed to delete'); }
   };
 
-  const filtered = papers.filter(p =>
-    p.subject?.toLowerCase().includes(search.toLowerCase()) ||
-    p.examType?.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = papers.filter(p => {
+    const q = search.toLowerCase().trim();
+    if (!q) return true;
+    return (
+      p.subject?.toLowerCase().includes(q) ||
+      p.examType?.toLowerCase().includes(q) ||
+      p.month?.toLowerCase().includes(q) ||
+      p.paperNum?.toLowerCase().includes(q) ||
+      p.paperType?.toLowerCase().includes(q) ||
+      String(p.year).includes(q)
+    );
+  });
 
   return (
     <div className="min-h-screen bg-background">
