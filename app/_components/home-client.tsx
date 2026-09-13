@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { Search, ArrowRight, GraduationCap, Users, Download } from 'lucide-react';
+import { Search, ArrowRight, GraduationCap, Users, Download, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Navbar } from '@/components/navbar';
 import { Footer } from '@/components/footer';
@@ -57,7 +57,7 @@ function AnimatedCounter({ target, label, icon }: { target: number; label: strin
   );
 }
 
-export function HomeClient({ schools, schoolCount, memberCount, downloadCount, siteUrl }: { schools: School[]; schoolCount: number; memberCount: number; downloadCount: number; siteUrl: string }) {
+export function HomeClient({ schools, schoolCount, memberCount, downloadCount, pastPaperCount, siteUrl }: { schools: School[]; schoolCount: number; memberCount: number; downloadCount: number; pastPaperCount: number; siteUrl: string }) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -116,6 +116,7 @@ export function HomeClient({ schools, schoolCount, memberCount, downloadCount, s
                 <AnimatedCounter target={schoolCount} label="Schools" icon={<GraduationCap className="w-5 h-5 text-[#FFA800]" />} />
                 <AnimatedCounter target={memberCount} label="Active Members" icon={<Users className="w-5 h-5 text-[#FFA800]" />} />
                 <AnimatedCounter target={downloadCount} label="Downloads" icon={<Download className="w-5 h-5 text-[#FFA800]" />} />
+                <AnimatedCounter target={pastPaperCount} label="Past Papers" icon={<FileText className="w-5 h-5 text-[#FFA800]" />} />
               </div>
             </div>
           </SlideIn>
