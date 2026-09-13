@@ -57,6 +57,16 @@ export function PwaInstallBanner() {
     setShowIOS(false);
   }, []);
 
+  // iOS has no appinstalled event, so this is the closest signal we have
+  // that the user actually followed the Share -> Add to Home Screen steps.
+  // Suppresses the banner for good instead of just the 3-day cooldown.
+  const dismissAfterInstall = useCallback(() => {
+    localStorage.setItem(INSTALLED_KEY, 'true');
+    setVisible(false);
+    setShowAndroid(false);
+    setShowIOS(false);
+  }, []);
+
   useEffect(() => {
     if (isStandalone() || isInstalled() || isDismissed()) return;
 
@@ -152,6 +162,13 @@ export function PwaInstallBanner() {
                   <Share className="w-3.5 h-3.5 shrink-0 mt-0.5 text-[#663f30]" />
                   <span>Tap <strong className="text-foreground">Share</strong>, then <strong className="text-foreground">&quot;Add to Home Screen&quot;</strong>.</span>
                 </div>
+                <button
+                  onClick={dismissAfterInstall}
+                  className="mt-2 text-xs font-medium underline"
+                  style={{ color: '#663f30' }}
+                >
+                  I&apos;ve added it
+                </button>
               </>
             )}
           </div>
