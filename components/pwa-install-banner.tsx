@@ -79,10 +79,11 @@ export function PwaInstallBanner() {
   const handleInstall = async () => {
     if (!deferredPrompt) return;
     await deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
-      dismiss();
-    }
+    await deferredPrompt.userChoice;
+    // Whether accepted or declined, the native prompt is now spent and
+    // deferredPrompt is being cleared below - hide the banner either way
+    // so a decline does not leave a dead "Install App" button on screen.
+    dismiss();
     setDeferredPrompt(null);
   };
 
