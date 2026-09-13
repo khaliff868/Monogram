@@ -112,7 +112,7 @@ export function HomeClient({ schools, schoolCount, memberCount, downloadCount, p
               </form>
 
               {/* Counters */}
-              <div className="flex items-center justify-center gap-8 mt-10">
+              <div className="grid grid-cols-2 gap-4 justify-items-center sm:flex sm:items-center sm:justify-center sm:gap-8 mt-10">
                 <AnimatedCounter target={schoolCount} label="Schools" icon={<GraduationCap className="w-5 h-5 text-[#FFA800]" />} />
                 <AnimatedCounter target={memberCount} label="Active Members" icon={<Users className="w-5 h-5 text-[#FFA800]" />} />
                 <AnimatedCounter target={downloadCount} label="Downloads" icon={<Download className="w-5 h-5 text-[#FFA800]" />} />
