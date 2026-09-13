@@ -101,14 +101,22 @@ export function AdminPastPapersClient() {
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
                             <FileText className="w-4 h-4" style={{ color: '#FFA800' }} />
-                            <h3 className="font-semibold text-sm">{paper.subject} — {paper.examType} {paper.year}</h3>
-                            <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${statusColors[paper.status] || ''}`}>{paper.status}</span>
-                            <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${paper.paperType === 'answer' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'}`}>{paper.paperType === 'answer' ? 'Answer Paper' : 'Question Paper'}</span>
+                            <h3 className="font-semibold text-sm">
+                              {paper.subject} — {paper.examType} {paper.year}{paper.month ? ` (${paper.month})` : ""}
+                            </h3>
+                            <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${statusColors[paper.status] || ""}`}>{paper.status}</span>
+                            <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${paper.paperType === "answer" ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"}`}>{paper.paperType === "answer" ? "Answer Paper" : "Question Paper"}</span>
                           </div>
                           {paper.paperNum && <p className="text-xs text-muted-foreground mb-1">{paper.paperNum}</p>}
                           <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
                             {paper.user && <span className="flex items-center gap-1"><User className="w-3 h-3" />{paper.user.username}</span>}
                             <span>{paper.downloads} downloads</span>
+                            {paper.createdAt && <span>Uploaded {new Date(paper.createdAt).toLocaleString()}</span>}
+                            {paper.filePath && (
+                              <a href={paper.filePath} target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
+                                View file
+                              </a>
+                            )}
                           </div>
                         </div>
                         <div className="flex items-center gap-1">
