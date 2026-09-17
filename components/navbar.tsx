@@ -1,30 +1,17 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 import { useState } from 'react';
-import { Menu, X, GraduationCap, LogIn, UserPlus, LayoutDashboard, LogOut, Shield, Search, MessageCircle } from 'lucide-react';
+import { Menu, X, GraduationCap, LogIn, UserPlus, LayoutDashboard, LogOut, Shield, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { NotificationBell } from '@/components/notification-bell';
-import { SearchSuggestions } from '@/components/search-suggestions';
 
 export function Navbar() {
   const { data: session } = useSession();
-  const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState('');
   const user = session?.user as any;
   const isAdmin = user?.role === 'admin';
-
-  const submitSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    const q = query.trim();
-    if (q) {
-      router.push(`/search?q=${encodeURIComponent(q)}`);
-      setOpen(false);
-    }
-  };
 
   return (
     <header className="sticky top-0 z-50 bg-[#f0e6df]/95 backdrop-blur-md border-b border-[#663f30]/10">
@@ -41,19 +28,6 @@ export function Navbar() {
           <Link href="/schools" className="px-3 py-2 text-sm font-medium rounded-lg hover:bg-muted transition-colors">Schools</Link>
           <Link href="/about" className="px-3 py-2 text-sm font-medium rounded-lg hover:bg-muted transition-colors">About</Link>
         </nav>
-
-        {/* Desktop search */}
-        <form onSubmit={submitSearch} className="hidden lg:flex items-center relative mx-2 flex-1 max-w-xs">
-          <Search className="w-4 h-4 absolute left-3 text-muted-foreground pointer-events-none" />
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search schools, listings..."
-            className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-border bg-white focus:outline-none focus:ring-2 focus:ring-[#FFA800] transition"
-          />
-          <SearchSuggestions query={query} />
-        </form>
 
         {/* Desktop auth */}
         <div className="hidden md:flex items-center gap-2">
@@ -99,17 +73,6 @@ export function Navbar() {
       {/* Mobile menu */}
       {open && (
         <div className="md:hidden border-t border-[#663f30]/10 bg-[#f0e6df] pb-4 px-4">
-          <form onSubmit={submitSearch} className="relative my-3">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search schools, listings..."
-              className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-border bg-white focus:outline-none focus:ring-2 focus:ring-[#FFA800] transition"
-            />
-            <SearchSuggestions query={query} />
-          </form>
           <nav className="flex flex-col gap-1 py-2">
             <Link href="/" className="px-3 py-2 text-sm font-medium rounded-lg hover:bg-muted" onClick={() => setOpen(false)}>Home</Link>
             <Link href="/schools" className="px-3 py-2 text-sm font-medium rounded-lg hover:bg-muted" onClick={() => setOpen(false)}>Schools</Link>
