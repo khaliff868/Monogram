@@ -10,6 +10,7 @@ import { SchoolCard } from '@/components/school-card';
 import { AnnouncementBar } from '@/components/announcement-bar';
 import { FadeIn, SlideIn, Stagger, StaggerItem } from '@/components/ui/animate';
 import { HomeAdBanner } from './home-ad-banner';
+import { HeroShareButton } from '@/components/hero-share-button';
 import { SearchSuggestions } from '@/components/search-suggestions';
 import { useRouter } from 'next/navigation';
 import { useInView } from 'react-intersection-observer';
@@ -75,6 +76,7 @@ export function HomeClient({ schools, schoolCount, memberCount, downloadCount, p
 
       {/* Hero */}
       <section className="relative bg-pattern-brown-tile">
+        <HeroShareButton />
         <div className="max-w-[1200px] mx-auto px-4 pt-[4px] pb-3 md:pt-[6px] md:pb-5 relative z-10">
           <SlideIn from="bottom">
             <div className="text-center max-w-2xl mx-auto">
