@@ -53,7 +53,10 @@ export function LoginClient() {
             <Input id="email" type="text" value={email} onChange={e => setEmail(e.target.value)} placeholder="you@email.com or username" className="mt-1" />
           </div>
           <div>
-            <Label htmlFor="password" className="text-sm">Password</Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="password" className="text-sm">Password</Label>
+              <Link href="/forgot-password" className="text-xs font-medium hover:underline" style={{ color: '#663f30' }}>Forgot Password?</Link>
+            </div>
             <div className="relative mt-1">
               <Input id="password" type={showPw ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter password" className="pr-10" />
               <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">
