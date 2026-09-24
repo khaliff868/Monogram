@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { normalizePreferences } from '@/lib/user-preferences';
 import { auth } from '@/auth';
 
 export const dynamic = 'force-dynamic';
@@ -57,6 +58,10 @@ export async function POST(req: NextRequest) {
   });
 
   if (!conversation) {
+    const recipient = await prisma.user.findUnique({ where: { id: recipientId }, select: { preferences: true } });
+    if (recipient && normalizePreferences(recipient.preferences).allowMessages === false) {
+      return NextResponse.json({ error: 'This user is not accepting new messages' }, { status: 403 });
+    }
     conversation = await prisma.conversation.create({
       data: { participant1Id: userId, participant2Id: recipientId, listingId: listingId || null },
     });

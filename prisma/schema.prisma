@@ -20,6 +20,12 @@ model User {
   lastLoginAt   DateTime?
   resetToken       String?
   resetTokenExpiry DateTime?
+  name             String?
+  phone            String?
+  whatsapp         String?
+  location         String?
+  bio              String?
+  preferences      Json?
 
   accounts      Account[]
   sessions      Session[]
