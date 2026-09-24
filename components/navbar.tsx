@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import { useState } from 'react';
-import { Menu, X, GraduationCap, LogIn, UserPlus, LayoutDashboard, LogOut, Shield, MessageCircle } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { Menu, X, GraduationCap, LogIn, UserPlus, LayoutDashboard, LogOut, Shield, MessageCircle, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { NotificationBell } from '@/components/notification-bell';
 
@@ -12,6 +13,10 @@ export function Navbar() {
   const [open, setOpen] = useState(false);
   const user = session?.user as any;
   const isAdmin = user?.role === 'admin';
+  const pathname = usePathname();
+  const onDashboard = pathname === '/dashboard';
+  const onSettings = pathname?.startsWith('/dashboard/settings') ?? false;
+  const activeCls = 'bg-[#FFA800] text-[#663f30] hover:bg-[#FFA800] hover:text-[#663f30]';
 
   return (
     <header className="sticky top-0 z-50 bg-[#f0e6df]/95 backdrop-blur-md border-b border-[#663f30]/10">
@@ -42,8 +47,11 @@ export function Navbar() {
                   <Link href="/admin"><Shield className="w-4 h-4 mr-1" />Admin</Link>
                 </Button>
               )}
-              <Button asChild variant="ghost" size="sm">
+              <Button asChild variant="ghost" size="sm" className={onDashboard ? activeCls : ''}>
                 <Link href="/dashboard"><LayoutDashboard className="w-4 h-4 mr-1" />Dashboard</Link>
+              </Button>
+              <Button asChild variant="ghost" size="sm" className={onSettings ? activeCls : ''}>
+                <Link href="/dashboard/settings"><Settings className="w-4 h-4 mr-1" />Settings</Link>
               </Button>
               <span className="text-sm font-medium max-w-[100px] truncate" style={{ color: '#663f30' }} title={user?.username}>
                 {user?.username}
@@ -86,8 +94,11 @@ export function Navbar() {
                     <Link href="/admin"><Shield className="w-4 h-4 mr-1" />Admin</Link>
                   </Button>
                 )}
-                <Button asChild variant="ghost" size="sm" onClick={() => setOpen(false)}>
+                <Button asChild variant="ghost" size="sm" className={onDashboard ? activeCls : ''} onClick={() => setOpen(false)}>
                   <Link href="/dashboard"><LayoutDashboard className="w-4 h-4 mr-1" />Dashboard</Link>
+                </Button>
+                <Button asChild variant="ghost" size="sm" className={onSettings ? activeCls : ''} onClick={() => setOpen(false)}>
+                  <Link href="/dashboard/settings"><Settings className="w-4 h-4 mr-1" />Settings</Link>
                 </Button>
                 <Button variant="outline" size="sm" onClick={() => { signOut({ redirectTo: '/' }); setOpen(false); }}>
                   <LogOut className="w-4 h-4 mr-1" />Logout
