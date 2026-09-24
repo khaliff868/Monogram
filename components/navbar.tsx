@@ -16,6 +16,7 @@ export function Navbar() {
   const pathname = usePathname();
   const onDashboard = pathname === '/dashboard';
   const onSettings = pathname?.startsWith('/dashboard/settings') ?? false;
+  const onMessages = pathname?.startsWith('/dashboard/messages') ?? false;
   const activeCls = 'bg-[#FFA800] text-[#663f30] hover:bg-[#FFA800] hover:text-[#663f30]';
 
   return (
@@ -31,6 +32,9 @@ export function Navbar() {
         <nav className="hidden md:flex items-center gap-1 md:ml-8 lg:ml-12">
           <Link href="/" className="px-3 py-2 text-sm font-medium rounded-lg hover:bg-muted transition-colors">Home</Link>
           <Link href="/schools" className="px-3 py-2 text-sm font-medium rounded-lg hover:bg-muted transition-colors">Schools</Link>
+          {session && (
+            <Link href="/dashboard" className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors flex items-center gap-1 ${onDashboard ? activeCls : 'hover:bg-muted'}`}><LayoutDashboard className="w-4 h-4" />Dashboard</Link>
+          )}
           <Link href="/about" className="px-3 py-2 text-sm font-medium rounded-lg hover:bg-muted transition-colors">About</Link>
         </nav>
 
@@ -38,21 +42,18 @@ export function Navbar() {
         <div className="hidden md:flex items-center gap-2">
           {session ? (
             <>
-              <NotificationBell />
-              <Button asChild variant="ghost" size="sm">
+              <Button asChild variant="ghost" size="sm" className={onMessages ? activeCls : ''}>
                 <Link href="/dashboard/messages"><MessageCircle className="w-4 h-4 mr-1" />Messages</Link>
+              </Button>
+              <Button asChild variant="ghost" size="sm" className={onSettings ? activeCls : ''}>
+                <Link href="/dashboard/settings"><Settings className="w-4 h-4 mr-1" />Settings</Link>
               </Button>
               {isAdmin && (
                 <Button asChild variant="outline" size="sm">
                   <Link href="/admin"><Shield className="w-4 h-4 mr-1" />Admin</Link>
                 </Button>
               )}
-              <Button asChild variant="ghost" size="sm" className={onDashboard ? activeCls : ''}>
-                <Link href="/dashboard"><LayoutDashboard className="w-4 h-4 mr-1" />Dashboard</Link>
-              </Button>
-              <Button asChild variant="ghost" size="sm" className={onSettings ? activeCls : ''}>
-                <Link href="/dashboard/settings"><Settings className="w-4 h-4 mr-1" />Settings</Link>
-              </Button>
+              <NotificationBell />
               <span className="text-sm font-medium max-w-[100px] truncate" style={{ color: '#663f30' }} title={user?.username}>
                 {user?.username}
               </span>
@@ -84,22 +85,25 @@ export function Navbar() {
           <nav className="flex flex-col gap-1 py-2">
             <Link href="/" className="px-3 py-2 text-sm font-medium rounded-lg hover:bg-muted" onClick={() => setOpen(false)}>Home</Link>
             <Link href="/schools" className="px-3 py-2 text-sm font-medium rounded-lg hover:bg-muted" onClick={() => setOpen(false)}>Schools</Link>
+            {session && (
+              <Link href="/dashboard" className={`px-3 py-2 text-sm font-medium rounded-lg ${onDashboard ? activeCls : 'hover:bg-muted'}`} onClick={() => setOpen(false)}>Dashboard</Link>
+            )}
             <Link href="/about" className="px-3 py-2 text-sm font-medium rounded-lg hover:bg-muted" onClick={() => setOpen(false)}>About</Link>
           </nav>
           <div className="flex flex-col gap-2 pt-2 border-t border-border">
             {session ? (
               <>
+                <Button asChild variant="ghost" size="sm" className={onMessages ? activeCls : ''} onClick={() => setOpen(false)}>
+                  <Link href="/dashboard/messages"><MessageCircle className="w-4 h-4 mr-1" />Messages</Link>
+                </Button>
+                <Button asChild variant="ghost" size="sm" className={onSettings ? activeCls : ''} onClick={() => setOpen(false)}>
+                  <Link href="/dashboard/settings"><Settings className="w-4 h-4 mr-1" />Settings</Link>
+                </Button>
                 {isAdmin && (
                   <Button asChild variant="outline" size="sm" onClick={() => setOpen(false)}>
                     <Link href="/admin"><Shield className="w-4 h-4 mr-1" />Admin</Link>
                   </Button>
                 )}
-                <Button asChild variant="ghost" size="sm" className={onDashboard ? activeCls : ''} onClick={() => setOpen(false)}>
-                  <Link href="/dashboard"><LayoutDashboard className="w-4 h-4 mr-1" />Dashboard</Link>
-                </Button>
-                <Button asChild variant="ghost" size="sm" className={onSettings ? activeCls : ''} onClick={() => setOpen(false)}>
-                  <Link href="/dashboard/settings"><Settings className="w-4 h-4 mr-1" />Settings</Link>
-                </Button>
                 <Button variant="outline" size="sm" onClick={() => { signOut({ redirectTo: '/' }); setOpen(false); }}>
                   <LogOut className="w-4 h-4 mr-1" />Logout
                 </Button>
