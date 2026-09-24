@@ -14,6 +14,10 @@ export function Navbar() {
   const user = session?.user as any;
   const isAdmin = user?.role === 'admin';
   const pathname = usePathname();
+  const onHome = pathname === '/';
+  const onSchools = pathname?.startsWith('/schools') ?? false;
+  const onAbout = pathname?.startsWith('/about') ?? false;
+  const onAdmin = pathname?.startsWith('/admin') ?? false;
   const onDashboard = pathname === '/dashboard';
   const onSettings = pathname?.startsWith('/dashboard/settings') ?? false;
   const onMessages = pathname?.startsWith('/dashboard/messages') ?? false;
@@ -30,12 +34,12 @@ export function Navbar() {
 
         {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-1 md:ml-8 lg:ml-12">
-          <Link href="/" className="px-3 py-2 text-sm font-medium rounded-lg hover:bg-muted transition-colors">Home</Link>
-          <Link href="/schools" className="px-3 py-2 text-sm font-medium rounded-lg hover:bg-muted transition-colors">Schools</Link>
+          <Link href="/" className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${onHome ? activeCls : 'hover:bg-muted'}`}>Home</Link>
+          <Link href="/schools" className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${onSchools ? activeCls : 'hover:bg-muted'}`}>Schools</Link>
           {session && (
             <Link href="/dashboard" className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors flex items-center gap-1 ${onDashboard ? activeCls : 'hover:bg-muted'}`}><LayoutDashboard className="w-4 h-4" />Dashboard</Link>
           )}
-          <Link href="/about" className="px-3 py-2 text-sm font-medium rounded-lg hover:bg-muted transition-colors">About</Link>
+          <Link href="/about" className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${onAbout ? activeCls : 'hover:bg-muted'}`}>About</Link>
         </nav>
 
         {/* Desktop auth */}
@@ -49,7 +53,7 @@ export function Navbar() {
                 <Link href="/dashboard/settings"><Settings className="w-4 h-4 mr-1" />Settings</Link>
               </Button>
               {isAdmin && (
-                <Button asChild variant="outline" size="sm">
+                <Button asChild variant="outline" size="sm" className={onAdmin ? `${activeCls} border-[#FFA800]` : ''}>
                   <Link href="/admin"><Shield className="w-4 h-4 mr-1" />Admin</Link>
                 </Button>
               )}
@@ -83,12 +87,12 @@ export function Navbar() {
       {open && (
         <div className="md:hidden border-t border-[#663f30]/10 bg-[#f0e6df] pb-4 px-4">
           <nav className="flex flex-col gap-1 py-2">
-            <Link href="/" className="px-3 py-2 text-sm font-medium rounded-lg hover:bg-muted" onClick={() => setOpen(false)}>Home</Link>
-            <Link href="/schools" className="px-3 py-2 text-sm font-medium rounded-lg hover:bg-muted" onClick={() => setOpen(false)}>Schools</Link>
+            <Link href="/" className={`px-3 py-2 text-sm font-medium rounded-lg ${onHome ? activeCls : 'hover:bg-muted'}`} onClick={() => setOpen(false)}>Home</Link>
+            <Link href="/schools" className={`px-3 py-2 text-sm font-medium rounded-lg ${onSchools ? activeCls : 'hover:bg-muted'}`} onClick={() => setOpen(false)}>Schools</Link>
             {session && (
               <Link href="/dashboard" className={`px-3 py-2 text-sm font-medium rounded-lg ${onDashboard ? activeCls : 'hover:bg-muted'}`} onClick={() => setOpen(false)}>Dashboard</Link>
             )}
-            <Link href="/about" className="px-3 py-2 text-sm font-medium rounded-lg hover:bg-muted" onClick={() => setOpen(false)}>About</Link>
+            <Link href="/about" className={`px-3 py-2 text-sm font-medium rounded-lg ${onAbout ? activeCls : 'hover:bg-muted'}`} onClick={() => setOpen(false)}>About</Link>
           </nav>
           <div className="flex flex-col gap-2 pt-2 border-t border-border">
             {session ? (
@@ -100,7 +104,7 @@ export function Navbar() {
                   <Link href="/dashboard/settings"><Settings className="w-4 h-4 mr-1" />Settings</Link>
                 </Button>
                 {isAdmin && (
-                  <Button asChild variant="outline" size="sm" onClick={() => setOpen(false)}>
+                  <Button asChild variant="outline" size="sm" className={onAdmin ? `${activeCls} border-[#FFA800]` : ''} onClick={() => setOpen(false)}>
                     <Link href="/admin"><Shield className="w-4 h-4 mr-1" />Admin</Link>
                   </Button>
                 )}
