@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.monogramtt.app",
+      "sha256_cert_fingerprints": [
+        "FA:B4:D2:67:EA:10:5A:97:F6:DF:7C:C1:A1:A5:20:41:0B:D3:B3:AE:21:A1:BF:A0:4A:5F:CB:41:F8:72:52:85"
+      ]
+    }
+  }
+]
