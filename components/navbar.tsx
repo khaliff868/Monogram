@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { Menu, X, GraduationCap, LogIn, UserPlus, LayoutDashboard, LogOut, Shield, MessageCircle, Settings } from 'lucide-react';
+import { Menu, X, GraduationCap, LogIn, UserPlus, LayoutDashboard, LogOut, Shield, MessageCircle, Settings, Tag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { NotificationBell } from '@/components/notification-bell';
 
@@ -21,6 +21,7 @@ export function Navbar() {
   const onDashboard = pathname === '/dashboard';
   const onSettings = pathname?.startsWith('/dashboard/settings') ?? false;
   const onMessages = pathname?.startsWith('/dashboard/messages') ?? false;
+  const onAdvertising = pathname?.startsWith('/advertising-pricing') ?? false;
   const activeCls = 'bg-[#FFA800] text-[#663f30] hover:bg-[#FFA800] hover:text-[#663f30]';
 
   return (
@@ -36,6 +37,7 @@ export function Navbar() {
         <nav className="hidden md:flex items-center gap-1 md:ml-8 lg:ml-12">
           <Link href="/" className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${onHome ? activeCls : 'hover:bg-muted'}`}>Home</Link>
           <Link href="/schools" className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${onSchools ? activeCls : 'hover:bg-muted'}`}>Schools</Link>
+          <Link href="/advertising-pricing" className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors flex items-center gap-1 ${onAdvertising ? activeCls : 'hover:bg-muted'}`}><Tag className="w-4 h-4" />Contact/Price</Link>
           {session && (
             <Link href="/dashboard" className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors flex items-center gap-1 ${onDashboard ? activeCls : 'hover:bg-muted'}`}><LayoutDashboard className="w-4 h-4" />Dashboard</Link>
           )}
@@ -89,6 +91,7 @@ export function Navbar() {
           <nav className="flex flex-col gap-1 py-2">
             <Link href="/" className={`px-3 py-2 text-sm font-medium rounded-lg ${onHome ? activeCls : 'hover:bg-muted'}`} onClick={() => setOpen(false)}>Home</Link>
             <Link href="/schools" className={`px-3 py-2 text-sm font-medium rounded-lg ${onSchools ? activeCls : 'hover:bg-muted'}`} onClick={() => setOpen(false)}>Schools</Link>
+            <Link href="/advertising-pricing" className={`px-3 py-2 text-sm font-medium rounded-lg flex items-center gap-1 ${onAdvertising ? activeCls : 'hover:bg-muted'}`} onClick={() => setOpen(false)}><Tag className="w-4 h-4" />Contact/Price</Link>
             {session && (
               <Link href="/dashboard" className={`px-3 py-2 text-sm font-medium rounded-lg ${onDashboard ? activeCls : 'hover:bg-muted'}`} onClick={() => setOpen(false)}>Dashboard</Link>
             )}
