@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/auth';
+import { getBlockState } from '@/lib/blocks';
 
 export const dynamic = 'force-dynamic';
 
@@ -32,7 +33,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ conv
     data: { read: true, readAt: new Date() },
   });
 
-  return NextResponse.json({ conversation, messages });
+  const otherId = conversation.participant1Id === userId ? conversation.participant2Id : conversation.participant1Id;
+  const blockState = await getBlockState(userId, otherId);
+
+  return NextResponse.json({ conversation, messages, blockState });
 }
 
 // POST - Send a message in an existing conversation
@@ -50,6 +54,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ con
     where: { id: conversationId, OR: [{ participant1Id: userId }, { participant2Id: userId }] },
   });
   if (!conversation) return NextResponse.json({ error: 'Conversation not found' }, { status: 404 });
+
+  const otherParticipantId = conversation.participant1Id === userId ? conversation.participant2Id : conversation.participant1Id;
+  const blockState = await getBlockState(userId, otherParticipantId);
+  if (blockState.blockedByMe || blockState.blockedByThem) {
+    return NextResponse.json({ error: 'You cannot message this user' }, { status: 403 });
+  }
 
   const message = await prisma.message.create({
     data: { conversationId, senderId: userId, content: content.trim() },

@@ -11,9 +11,9 @@ import { SafeDate } from '@/components/safe-format';
 
 interface Report {
   id: string;
-  itemType: string;
-  itemId: string;
-  itemName: string;
+  type: string;
+  targetId: string;
+  targetName: string | null;
   reason: string;
   details: string | null;
   status: string;
@@ -61,9 +61,13 @@ export function AdminReportsClient({ reports: initialReports }: { reports: Repor
   };
 
   const typeLabel = (t: string) => {
-    if (t === 'SCHOOL') return 'School';
-    if (t === 'LISTING') return 'Listing';
-    if (t === 'SUPPLIER') return 'Supplier';
+    const k = t.toLowerCase();
+    if (k === 'school') return 'School';
+    if (k === 'listing') return 'Listing';
+    if (k === 'supplier') return 'Supplier';
+    if (k === 'past_paper') return 'Past paper';
+    if (k === 'message') return 'Message';
+    if (k === 'user') return 'User';
     return t;
   };
 
@@ -101,9 +105,9 @@ export function AdminReportsClient({ reports: initialReports }: { reports: Repor
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap mb-1">
                             <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${statusColor(report.status)}`}>{report.status}</span>
-                            <span className="text-[10px] px-2 py-0.5 rounded-full font-medium bg-muted text-muted-foreground">{typeLabel(report.itemType)}</span>
+                            <span className="text-[10px] px-2 py-0.5 rounded-full font-medium bg-muted text-muted-foreground">{typeLabel(report.type)}</span>
                           </div>
-                          <h3 className="font-display font-semibold text-sm" style={{ color: '#663f30' }}>{report.itemName}</h3>
+                          <h3 className="font-display font-semibold text-sm" style={{ color: '#663f30' }}>{report.targetName ?? report.targetId}</h3>
                           <p className="text-xs text-muted-foreground mt-0.5">Reason: {report.reason}</p>
                           {report.details && <p className="text-xs text-muted-foreground mt-0.5">{report.details}</p>}
                           <p className="text-[10px] text-muted-foreground mt-1">

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { normalizePreferences } from '@/lib/user-preferences';
 import { auth } from '@/auth';
+import { isBlockedEitherWay } from '@/lib/blocks';
 
 export const dynamic = 'force-dynamic';
 
@@ -47,6 +48,10 @@ export async function POST(req: NextRequest) {
 
   if (!recipientId) return NextResponse.json({ error: 'Recipient ID is required' }, { status: 400 });
   if (recipientId === userId) return NextResponse.json({ error: 'Cannot message yourself' }, { status: 400 });
+
+  if (await isBlockedEitherWay(userId, recipientId)) {
+    return NextResponse.json({ error: 'You cannot message this user' }, { status: 403 });
+  }
 
   let conversation = await prisma.conversation.findFirst({
     where: {
