@@ -100,18 +100,18 @@ export function Navbar() {
           <div className="flex flex-col gap-2 pt-2 border-t border-border">
             {session ? (
               <>
-                <Button asChild variant="ghost" size="sm" className={onMessages ? activeCls : ''} onClick={() => setOpen(false)}>
+                <Button asChild variant="ghost" size="sm" className={`w-full justify-start px-3 py-2 h-auto text-sm font-medium ${onMessages ? activeCls : ''}`} onClick={() => setOpen(false)}>
                   <Link href="/dashboard/messages"><MessageCircle className="w-4 h-4 mr-1" />Messages</Link>
                 </Button>
-                <Button asChild variant="ghost" size="sm" className={onSettings ? activeCls : ''} onClick={() => setOpen(false)}>
+                <Button asChild variant="ghost" size="sm" className={`w-full justify-start px-3 py-2 h-auto text-sm font-medium ${onSettings ? activeCls : ''}`} onClick={() => setOpen(false)}>
                   <Link href="/dashboard/settings"><Settings className="w-4 h-4 mr-1" />Settings</Link>
                 </Button>
                 {isAdmin && (
-                  <Button asChild variant="outline" size="sm" className={onAdmin ? `${activeCls} border-[#FFA800]` : ''} onClick={() => setOpen(false)}>
+                  <Button asChild variant="outline" size="sm" className={`w-full justify-start px-3 py-2 h-auto text-sm font-medium ${onAdmin ? `${activeCls} border-[#FFA800]` : ''}`} onClick={() => setOpen(false)}>
                     <Link href="/admin"><Shield className="w-4 h-4 mr-1" />Admin</Link>
                   </Button>
                 )}
-                <Button variant="outline" size="sm" onClick={() => { signOut({ redirectTo: '/' }); setOpen(false); }}>
+                <Button variant="outline" size="sm" className="w-full justify-start px-3 py-2 h-auto text-sm font-medium" onClick={() => { signOut({ redirectTo: '/' }); setOpen(false); }}>
                   <LogOut className="w-4 h-4 mr-1" />Logout
                 </Button>
               </>
