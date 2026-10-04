@@ -117,10 +117,10 @@ export function Navbar() {
               </>
             ) : (
               <>
-                <Button asChild variant="ghost" size="sm" onClick={() => setOpen(false)}>
+                <Button asChild variant="ghost" size="sm" className="w-full justify-start px-3 py-2 h-auto text-sm font-medium" onClick={() => setOpen(false)}>
                   <Link href="/login"><LogIn className="w-4 h-4 mr-1" />Login</Link>
                 </Button>
-                <Button asChild size="sm" className="bg-[#663f30] hover:bg-[#533226] text-white" onClick={() => setOpen(false)}>
+                <Button asChild size="sm" className="w-full justify-start px-3 py-2 h-auto text-sm font-medium bg-[#663f30] hover:bg-[#533226] text-white" onClick={() => setOpen(false)}>
                   <Link href="/signup"><UserPlus className="w-4 h-4 mr-1" />Sign Up</Link>
                 </Button>
               </>
