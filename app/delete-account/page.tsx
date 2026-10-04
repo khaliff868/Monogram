@@ -32,7 +32,8 @@ export default function DeleteAccountPage() {
                 <li>Tap <strong>Delete Account</strong>, then confirm with <strong>Permanently Delete</strong>.</li>
               </ol>
               <p className="mt-3">
-                Before deleting, you can use <strong>Download My Data</strong> in the same section to save a copy of your information.
+                The steps are the same whether you signed up with an email and password or with Google. Before deleting,
+                you can use <strong>Download My Data</strong> in the same section to save a copy of your information.
               </p>
             </section>
 

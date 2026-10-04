@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import { GoogleSignInButton } from '@/components/google-sign-in-button';
 
 export function LoginClient() {
   const router = useRouter();
@@ -16,6 +17,15 @@ export function LoginClient() {
   const [password, setPassword] = useState('');
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const err = new URLSearchParams(window.location.search).get('error');
+    if (err) {
+      toast.error(err === 'AccessDenied'
+        ? 'This account cannot sign in. Contact support if you think this is a mistake.'
+        : 'Sign in failed. Please try again.');
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,6 +55,13 @@ export function LoginClient() {
             MONOGRAM
           </Link>
           <p className="text-sm text-muted-foreground mt-2">Sign in to your account</p>
+        </div>
+
+        <GoogleSignInButton />
+        <div className="flex items-center gap-3 my-4">
+          <div className="flex-1 h-px bg-border" />
+          <span className="text-xs text-muted-foreground">or</span>
+          <div className="flex-1 h-px bg-border" />
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

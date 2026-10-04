@@ -23,6 +23,9 @@ export async function POST(req: Request) {
     if (user.suspended) {
       return NextResponse.json({ error: 'Account suspended' }, { status: 403 });
     }
+    if (!user.password) {
+      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+    }
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });

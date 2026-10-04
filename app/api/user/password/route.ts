@@ -13,6 +13,9 @@ export async function PUT(req: Request) {
     if (!currentPassword || !newPassword) return NextResponse.json({ error: 'Both fields required' }, { status: 400 });
     const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
     if (!dbUser) return NextResponse.json({ error: 'User not found' }, { status: 404 });
+    if (!dbUser.password) {
+      return NextResponse.json({ error: 'This account signs in with Google and has no password. Use Forgot Password on the login page to set one.' }, { status: 400 });
+    }
     const valid = await bcrypt.compare(currentPassword, dbUser.password);
     if (!valid) return NextResponse.json({ error: 'Current password is incorrect' }, { status: 400 });
     const hashed = await bcrypt.hash(newPassword, 12);

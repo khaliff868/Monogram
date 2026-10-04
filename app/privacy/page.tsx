@@ -27,7 +27,7 @@ export default function PrivacyPage() {
             <section>
               <h2 className="font-display text-xl font-semibold mt-6 mb-2" style={{ color: '#663f30' }}>Information We Collect</h2>
               <p className="font-medium mt-3">Account Information</p>
-              <p>When you create an account, we collect your email address, a username, and a password (stored securely as a one-way hash — we never store your password in plain text).</p>
+              <p>When you create an account, we collect your email address, a username, and a password (stored securely as a one-way hash — we never store your password in plain text). If you choose to sign in with Google, we receive your name and email address from Google to create your account; we never receive your Google password.</p>
 
               <p className="font-medium mt-3">Content You Provide</p>
               <p>If you post a listing, past paper, e-book, or supplier profile, we collect the information you choose to include, such as titles, descriptions, prices, uploaded files or photos, and contact details (phone number, email, or WhatsApp number) that you provide for buyers to reach you.</p>

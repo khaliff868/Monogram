@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
+import { GoogleSignInButton } from '@/components/google-sign-in-button';
 
 export function SignupClient() {
   const router = useRouter();
@@ -66,6 +67,13 @@ export function SignupClient() {
             MONOGRAM
           </Link>
           <p className="text-sm text-muted-foreground mt-2">Create your account</p>
+        </div>
+
+        <GoogleSignInButton label="Sign up with Google" />
+        <div className="flex items-center gap-3 my-4">
+          <div className="flex-1 h-px bg-border" />
+          <span className="text-xs text-muted-foreground">or</span>
+          <div className="flex-1 h-px bg-border" />
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
