@@ -5,7 +5,7 @@ import { QRCodeSVG } from 'qrcode.react';
 import { Smartphone, BookOpen, Shirt, FileText, Megaphone } from 'lucide-react';
 
 const MAX_POOL = 12;
-const ROTATION_INTERVAL = 5 * 60 * 1000; // 5 minutes
+const ROTATION_INTERVAL = 2 * 60 * 1000; // 2 minutes
 
 interface HomeAd {
   id: string;
@@ -47,7 +47,7 @@ export function HomeAdBanner({ siteUrl }: { siteUrl: string }) {
       .catch(() => setLoaded(true));
   }, []);
 
-  // Rotate to next ad every 5 minutes
+  // Rotate to next ad every 2 minutes
   useEffect(() => {
     if (pool.length <= 1) return;
     const interval = setInterval(() => {
