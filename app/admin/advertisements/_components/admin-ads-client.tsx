@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Plus, Pencil, Trash2, ToggleLeft, ToggleRight, BarChart3 } from 'lucide-react';
 import { toast } from 'sonner';
+import { uploadAdBanner } from '@/lib/supabase-client';
 import { useRouter } from 'next/navigation';
 
 interface Ad {
@@ -52,15 +53,12 @@ export function AdminAdsClient({ ads, schools }: { ads: Ad[]; schools: SchoolOpt
 
       // Upload banner if selected
       if (bannerFile) {
-        const presignRes = await fetch('/api/upload/presigned', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ fileName: bannerFile.name, contentType: bannerFile.type, isPublic: true }),
-        });
-        if (presignRes.ok) {
-          const { uploadUrl, cloud_storage_path } = await presignRes.json();
-          await fetch(uploadUrl, { method: 'PUT', headers: { 'Content-Type': bannerFile.type }, body: bannerFile });
-          bannerImagePath = cloud_storage_path;
+        try {
+          bannerImagePath = await uploadAdBanner(bannerFile);
+        } catch {
+          toast.error('Banner image upload failed. The ad was not saved.');
+          setSaving(false);
+          return;
         }
       }
 

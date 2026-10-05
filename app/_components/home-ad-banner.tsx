@@ -37,7 +37,10 @@ export function HomeAdBanner({ siteUrl }: { siteUrl: string }) {
       .then((res) => res.json())
       .then((data) => {
         if (data.ads && data.ads.length > 0) {
-          setPool(data.ads.slice(0, MAX_POOL));
+          const ads = data.ads.slice(0, MAX_POOL);
+          setPool(ads);
+          // Start on a random ad so visitors see every advertiser, not only the newest.
+          setCurrentIndex(Math.floor(Math.random() * ads.length));
         }
         setLoaded(true);
       })

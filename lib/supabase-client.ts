@@ -31,3 +31,12 @@ export async function uploadEbookFile(file: File): Promise<string> {
   const { data } = supabase.storage.from('ebooks').getPublicUrl(fileName);
   return data.publicUrl;
 }
+
+export async function uploadAdBanner(file: File): Promise<string> {
+  const ext = file.name.split('.').pop();
+  const fileName = `ads/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const { error } = await supabase.storage.from('listing-photos').upload(fileName, file);
+  if (error) throw error;
+  const { data } = supabase.storage.from('listing-photos').getPublicUrl(fileName);
+  return data.publicUrl;
+}
