@@ -35,9 +35,9 @@ export function Footer() {
           <div>
             <h3 className="font-display font-semibold text-sm mb-3" style={{ color: '#FFA800' }}>Connect</h3>
             <div className="flex gap-3">
-              <a href="#" className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors" aria-label="Facebook"><Facebook className="w-5 h-5" /></a>
-              <a href="#" className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors" aria-label="Instagram"><Instagram className="w-5 h-5" /></a>
-              <a href="#" className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors" aria-label="Twitter"><Twitter className="w-5 h-5" /></a>
+              <Link href="/advertising-pricing" className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors" aria-label="Contact and pricing (Facebook)"><Facebook className="w-5 h-5" /></Link>
+              <Link href="/advertising-pricing" className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors" aria-label="Contact and pricing (Instagram)"><Instagram className="w-5 h-5" /></Link>
+              <Link href="/advertising-pricing" className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors" aria-label="Contact and pricing (Twitter)"><Twitter className="w-5 h-5" /></Link>
             </div>
           </div>
         </div>
