@@ -123,7 +123,7 @@ export function HomeAdBanner({ siteUrl }: { siteUrl: string }) {
 
   const showAd = loaded && pool.length > 0 && currentAd;
   const bannerInner = showAd ? adInner : ctaInner;
-  const bannerHref = showAd ? (currentAd!.destinationUrl ?? '#') : '/about';
+  const bannerHref = showAd ? (currentAd!.destinationUrl ?? '#') : '/advertising-pricing';
   const bannerOnClick = showAd ? () => handleClick(currentAd!.id) : undefined;
   const bannerTarget = showAd && currentAd!.destinationUrl ? '_blank' : undefined;
 
